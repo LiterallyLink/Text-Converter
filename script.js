@@ -40,7 +40,45 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // New added for UPPERCASE word styling
+    const SERIF_BOLD_FONTS = {
+        'A': '𝐀', 'B': '𝐁', 'C': '𝐂', 'D': '𝐃', 'E': '𝐄', 
+        'F': '𝐅', 'G': '𝐆', 'H': '𝐇', 'I': '𝐈', 'J': '𝐉', 
+        'K': '𝐊', 'L': '𝐋', 'M': '𝐌', 'N': '𝐍', 'O': '𝐎', 
+        'P': '𝐏', 'Q': '𝐐', 'R': '𝐑', 'S': '𝐒', 'T': '𝐓', 
+        'U': '𝐔', 'V': '𝐕', 'W': '𝐖', 'X': '𝐗', 'Y': '𝐘', 'Z': '𝐙',
+        'a': '𝐚', 'b': '𝐛', 'c': '𝐜', 'd': '𝐝', 'e': '𝐞', 
+        'f': '𝐟', 'g': '𝐠', 'h': '𝐡', 'i': '𝐢', 'j': '𝐣', 
+        'k': '𝐤', 'l': '𝐥', 'm': '𝐦', 'n': '𝐧', 'o': '𝐨', 
+        'p': '𝐩', 'q': '𝐪', 'r': '𝐫', 's': '𝐬', 't': '𝐭', 
+        'u': '𝐮', 'v': '𝐯', 'w': '𝐰', 'x': '𝐱', 'y': '𝐲', 'z': '𝐳'
+    };
+
+    const SERIF_BOLD_ITALIC_FONTS = {
+        'A': '𝑨', 'B': '𝑩', 'C': '𝑪', 'D': '𝑫', 'E': '𝑬', 
+        'F': '𝑭', 'G': '𝑮', 'H': '𝑯', 'I': '𝑰', 'J': '𝑱', 
+        'K': '𝑲', 'L': '𝑳', 'M': '𝑴', 'N': '𝑵', 'O': '𝑶', 
+        'P': '𝑷', 'Q': '𝑸', 'R': '𝑹', 'S': '𝑺', 'T': '𝑻', 
+        'U': '𝑼', 'V': '𝑽', 'W': '𝑾', 'X': '𝑿', 'Y': '𝒀', 'Z': '𝒁',
+        'a': '𝒂', 'b': '𝒃', 'c': '𝒄', 'd': '𝒅', 'e': '𝒆', 
+        'f': '𝒇', 'g': '𝒈', 'h': '𝒉', 'i': '𝒊', 'j': '𝒋', 
+        'k': '𝒌', 'l': '𝒍', 'm': '𝒎', 'n': '𝒏', 'o': '𝒐', 
+        'p': '𝒑', 'q': '𝒒', 'r': '𝒓', 's': '𝒔', 't': '𝒕', 
+        'u': '𝒖', 'v': '𝒗', 'w': '𝒘', 'x': '𝒙', 'y': '𝒚', 'z': '𝒛'
+    };
+
+    const BOLD_ITALIC_FONTS = {
+        'A': '𝘼', 'B': '𝘽', 'C': '𝘾', 'D': '𝘿', 'E': '𝙀', 
+        'F': '𝙁', 'G': '𝙂', 'H': '𝙃', 'I': '𝙄', 'J': '𝙅', 
+        'K': '𝙆', 'L': '𝙇', 'M': '𝙈', 'N': '𝙉', 'O': '𝙊', 
+        'P': '𝙋', 'Q': '𝙌', 'R': '𝙍', 'S': '𝙎', 'T': '𝙏', 
+        'U': '𝙐', 'V': '𝙑', 'W': '𝙒', 'X': '𝙓', 'Y': '𝙔', 'Z': '𝙕',
+        'a': '𝙖', 'b': '𝙗', 'c': '𝙘', 'd': '𝙙', 'e': '𝙚', 
+        'f': '𝙛', 'g': '𝙜', 'h': '𝙝', 'i': '𝙞', 'j': '𝙟', 
+        'k': '𝙠', 'l': '𝙡', 'm': '𝙢', 'n': '𝙣', 'o': '𝙤', 
+        'p': '𝙥', 'q': '𝙦', 'r': '𝙧', 's': '𝙨', 't': '𝙩', 
+        'u': '𝙪', 'v': '𝙫', 'w': '𝙬', 'x': '𝙭', 'y': '𝙮', 'z': '𝙯'
+    };
+
     const UPPERCASE_WORD_STYLES = {
         'bold': {
             transform: (word) => word.split('').map(char => FIRST_LETTER_FONTS['bold'][char] || char).join('')
@@ -49,13 +87,13 @@ document.addEventListener('DOMContentLoaded', () => {
             transform: (word) => word.split('').map(char => FIRST_LETTER_FONTS['gothic'][char] || char).join('')
         },
         'serif-bold': {
-            transform: (word) => `<span style="font-weight: bold; font-family: serif;">${word}</span>`
+            transform: (word) => word.split('').map(char => SERIF_BOLD_FONTS[char] || char).join('')
         },
         'serif-bold-italic': {
-            transform: (word) => `<span style="font-weight: bold; font-style: italic; font-family: serif;">${word}</span>`
+            transform: (word) => word.split('').map(char => SERIF_BOLD_ITALIC_FONTS[char] || char).join('')
         },
         'bold-italic': {
-            transform: (word) => `<span style="font-weight: bold; font-style: italic;">${word}</span>`
+            transform: (word) => word.split('').map(char => BOLD_ITALIC_FONTS[char] || char).join('')
         }
     };
 
@@ -75,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
         commaStyle: document.getElementById('commaStyle'),
         punctuationStyle: document.getElementById('punctuationStyle'),
         spaceStyle: document.getElementById('spaceStyle'),
-        uppercaseWordStyle: document.getElementById('uppercaseWordStyle'), // New dropdown for uppercase word styling
+        uppercaseWordStyle: document.getElementById('uppercaseWordStyle'),
         output: document.getElementById('output')
     };
 
