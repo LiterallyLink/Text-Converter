@@ -7,6 +7,23 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="theme-switch-wrapper">
+        <label class="switch" for="checkbox">
+            <input type="checkbox" id="checkbox" class="input" />
+            <span class="slider">
+                <div class="moon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"/>
+                    </svg>
+                </div>
+                <div class="sun">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 18a6 6 0 1 1 0 -12a6 6 0 0 1 0 12zm0 -1.5a4.5 4.5 0 1 0 0 -9a4.5 4.5 0 0 0 0 9zM12 4V2M12 22v-2M4 12H2m20 0h-2m-2.45 -7.75l-1.41 1.41M5.86 18.14l-1.41 1.41m13.69 0l-1.41 -1.41M5.86 5.86L4.45 4.45"/>
+                    </svg>
+                </div>
+            </span>
+        </label>
+    </div>
     <main class="container">
         <header>
             <h1>Text Converter</h1>
@@ -94,6 +111,12 @@
             ></div>
         </section>
     </main>
+
+    <footer class="footer">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfPW2oq5iwUqbweNAUosl_ZyRAl-ABHRKxGSbUMNEtX6TMfHg/viewform?usp=dialog" class="footer-link" target="_blank" rel="noopener noreferrer">Feedback</a>
+        <span class="footer-separator">•</span>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSePP9WHF9Yf3uIw8F_ofU12ngmP-lhq_z_HCh1omUlq4BUOlQ/viewform?usp=dialog" class="footer-link" target="_blank" rel="noopener noreferrer">Report a Bug</a>
+    </footer>
 
     <script src="script.js"></script>
 </body>
