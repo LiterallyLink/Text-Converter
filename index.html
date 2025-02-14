@@ -1,124 +1,138 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text Converter</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="theme-switch-wrapper">
-        <label class="switch" for="checkbox">
-            <input type="checkbox" id="checkbox" class="input" />
-            <span class="slider">
-                <div class="moon">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"/>
-                    </svg>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Text Converter</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <div class="theme-switch-wrapper">
+            <label class="switch" for="checkbox">
+                <input type="checkbox" id="checkbox" class="input" />
+                <span class="slider">
+                    <div class="moon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"/>
+                        </svg>
+                    </div>
+                    <div class="sun">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M12 18a6 6 0 1 1 0 -12a6 6 0 0 1 0 12zm0 -1.5a4.5 4.5 0 1 0 0 -9a4.5 4.5 0 0 0 0 9zM12 4V2M12 22v-2M4 12H2m20 0h-2m-2.45 -7.75l-1.41 1.41M5.86 18.14l-1.41 1.41m13.69 0l-1.41 -1.41M5.86 5.86L4.45 4.45"/>
+                        </svg>
+                    </div>
+                </span>
+            </label>
+        </div>
+        <main class="container">
+            <header>
+                <h1>Text Converter</h1>
+            </header>
+            
+            <section>
+                <label for="inputText" class="sr-only">Enter your text</label>
+                <input 
+                    type="text" 
+                    id="inputText" 
+                    placeholder="Enter your text here..." 
+                    aria-describedby="textInstructions"
+                >
+                <p id="textInstructions" class="sr-only">
+                    Type text to see it styled with special first letter and comma options
+                </p>
+                
+                <label for="firstLetterFont">Select First Letter Style</label>
+                <select 
+                    id="firstLetterFont" 
+                    aria-label="First letter font style"
+                >
+                    <option value="">Select First Letter Style</option>
+                    <option value="cursive">Cursive</option>
+                    <option value="gothic">Gothic</option>
+                    <option value="bold">Bold</option>
+                </select>
+                
+                <label for="commaStyle">Select Comma Style</label>
+                <select 
+                    id="commaStyle" 
+                    aria-label="Comma replacement style"
+                >
+                    <option value="">Select Comma Style</option>
+                    <option value="、">、</option>
+                    <option value="⸝⸝">⸝⸝</option>
+                    <option value="◞">◞</option>
+                    <option value="،،̲">،،̲</option>
+                    <option value="⸝">⸝</option>
+                </select>
+                
+                <label for="punctuationStyle">Select Punctuation Style</label>
+                <select 
+                    id="punctuationStyle" 
+                    aria-label="Punctuation replacement style"
+                >
+                    <option value="">Select Punctuation Style</option>
+                    <option value="⠀ׅ⎖,⠀ׅ𖤠">ׅ⎖ and⠀ׅ𖤠</option>
+                    <option value=".ᐟ,.ᐣ">.ᐟ and .ᐣ</option>
+                    <option value="₊ᐟ,₊ᐣ">₊ᐟ and ₊ᐣ</option>
+                </select>
+
+                <label for="spaceStyle">Select Space Style</label>
+                <select 
+                    id="spaceStyle" 
+                    aria-label="Space replacement style"
+                >
+                    <option value="">Select Space Style</option>
+                    <option value="thin-space">Thin Space</option>
+                    <option value="hair-space">Hair Space</option>
+                    <option value="figure-space">Figure Space</option>
+                    <option value="punctuation-space">Punctuation Space</option>
+                    <option value="em-quad">Em Quad Space</option>
+                    <option value="en-quad">En Quad Space</option>
+                </select>
+                        
+                <label for="uppercaseWordStyle">Select Uppercase Word Style</label>
+                <select 
+                    id="uppercaseWordStyle" 
+                    aria-label="Uppercase word style"
+                >
+                    <option value="">Select Uppercase Word Style</option>
+                    <option value="bold">Bold</option>
+                    <option value="gothic">Gothic</option>
+                    <option value="serif-bold">Serif Bold</option>
+                    <option value="serif-bold-italic">Serif Bold Italic</option>
+                    <option value="bold-italic">Bold Italic</option>
+                </select>
+            </section>
+            <section>
+                <h2 class="sr-only">Output</h2>
+                <div class="output-container">
+                    <div 
+                        id="output" 
+                        aria-live="polite" 
+                        aria-atomic="true"
+                    ></div>
+                    <button 
+                        id="copyButton" 
+                        class="copy-button" 
+                        aria-label="Copy text"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="copy-icon">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                    </button>
                 </div>
-                <div class="sun">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path d="M12 18a6 6 0 1 1 0 -12a6 6 0 0 1 0 12zm0 -1.5a4.5 4.5 0 1 0 0 -9a4.5 4.5 0 0 0 0 9zM12 4V2M12 22v-2M4 12H2m20 0h-2m-2.45 -7.75l-1.41 1.41M5.86 18.14l-1.41 1.41m13.69 0l-1.41 -1.41M5.86 5.86L4.45 4.45"/>
-                    </svg>
-                </div>
-            </span>
-        </label>
-    </div>
-    <main class="container">
-        <header>
-            <h1>Text Converter</h1>
-        </header>
-        
-        <section>
-            <label for="inputText" class="sr-only">Enter your text</label>
-            <input 
-                type="text" 
-                id="inputText" 
-                placeholder="Enter your text here..." 
-                aria-describedby="textInstructions"
-            >
-            <p id="textInstructions" class="sr-only">
-                Type text to see it styled with special first letter and comma options
-            </p>
-            
-            <label for="firstLetterFont">Select First Letter Style</label>
-            <select 
-                id="firstLetterFont" 
-                aria-label="First letter font style"
-            >
-                <option value="">Select First Letter Style</option>
-                <option value="cursive">Cursive</option>
-                <option value="gothic">Gothic</option>
-                <option value="bold">Bold</option>
-            </select>
-            
-            <label for="commaStyle">Select Comma Style</label>
-            <select 
-                id="commaStyle" 
-                aria-label="Comma replacement style"
-            >
-                <option value="">Select Comma Style</option>
-                <option value="、">、</option>
-                <option value="⸝⸝">⸝⸝</option>
-                <option value="◞">◞</option>
-                <option value="،،̲">،،̲</option>
-                <option value="⸝">⸝</option>
-            </select>
-            
-            <label for="punctuationStyle">Select Punctuation Style</label>
-            <select 
-                id="punctuationStyle" 
-                aria-label="Punctuation replacement style"
-            >
-                <option value="">Select Punctuation Style</option>
-                <option value="⠀ׅ⎖,⠀ׅ𖤠">ׅ⎖ and⠀ׅ𖤠</option>
-                <option value=".ᐟ,.ᐣ">.ᐟ and .ᐣ</option>
-                <option value="₊ᐟ,₊ᐣ">₊ᐟ and ₊ᐣ</option>
-            </select>
+            </section>
+            <div class="notification" id="copyNotification">Copied to Clipboard!</div>
+        </main>
 
-            <label for="spaceStyle">Select Space Style</label>
-            <select 
-                id="spaceStyle" 
-                aria-label="Space replacement style"
-            >
-                <option value="">Select Space Style</option>
-                <option value="thin-space">Thin Space</option>
-                <option value="hair-space">Hair Space</option>
-                <option value="figure-space">Figure Space</option>
-                <option value="punctuation-space">Punctuation Space</option>
-                <option value="em-quad">Em Quad Space</option>
-                <option value="en-quad">En Quad Space</option>
-            </select>
-                    
-            <label for="uppercaseWordStyle">Select Uppercase Word Style</label>
-            <select 
-                id="uppercaseWordStyle" 
-                aria-label="Uppercase word style"
-            >
-                <option value="">Select Uppercase Word Style</option>
-                <option value="bold">Bold</option>
-                <option value="gothic">Gothic</option>
-                <option value="serif-bold">Serif Bold</option>
-                <option value="serif-bold-italic">Serif Bold Italic</option>
-                <option value="bold-italic">Bold Italic</option>
-            </select>
-        </section>
-        <section>
-            <h2 class="sr-only">Output</h2>
-            <div 
-                id="output" 
-                aria-live="polite" 
-                aria-atomic="true"
-            ></div>
-        </section>
-    </main>
+        <footer class="footer">
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfPW2oq5iwUqbweNAUosl_ZyRAl-ABHRKxGSbUMNEtX6TMfHg/viewform?usp=dialog" class="footer-link" target="_blank" rel="noopener noreferrer">Feedback</a>
+            <span class="footer-separator">•</span>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSePP9WHF9Yf3uIw8F_ofU12ngmP-lhq_z_HCh1omUlq4BUOlQ/viewform?usp=dialog" class="footer-link" target="_blank" rel="noopener noreferrer">Report a Bug</a>
+            <span class="footer-separator">•</span>
+        </footer>
 
-    <footer class="footer">
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfPW2oq5iwUqbweNAUosl_ZyRAl-ABHRKxGSbUMNEtX6TMfHg/viewform?usp=dialog" class="footer-link" target="_blank" rel="noopener noreferrer">Feedback</a>
-        <span class="footer-separator">•</span>
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSePP9WHF9Yf3uIw8F_ofU12ngmP-lhq_z_HCh1omUlq4BUOlQ/viewform?usp=dialog" class="footer-link" target="_blank" rel="noopener noreferrer">Report a Bug</a>
-    </footer>
-
-    <script src="script.js"></script>
-</body>
-</html>
+        <script src="script.js"></script>
+    </body>
+    </html>
