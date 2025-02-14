@@ -114,7 +114,9 @@ document.addEventListener('DOMContentLoaded', () => {
         punctuationStyle: document.getElementById('punctuationStyle'),
         spaceStyle: document.getElementById('spaceStyle'),
         uppercaseWordStyle: document.getElementById('uppercaseWordStyle'),
-        output: document.getElementById('output')
+        output: document.getElementById('output'),
+        copyButton: document.getElementById('copyButton'),
+        inputText: document.getElementById('inputText')
     };
 
     /**
@@ -227,6 +229,24 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.output.innerHTML = processedText;
     }
 
+    async function copyToClipboard() {
+        const textToCopy = elements.output.textContent;
+        const notification = document.getElementById('copyNotification');
+        
+        try {
+            await navigator.clipboard.writeText(textToCopy);
+            elements.copyButton.classList.add('copied');
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                elements.copyButton.classList.remove('copied');
+                notification.classList.remove('show');
+            }, 2000);
+        } catch (err) {
+            console.error('Failed to copy text:', err);
+        }
+    }
+
     // Add event listeners
     elements.inputText.addEventListener('input', updateOutput);
     elements.firstLetterFont.addEventListener('change', updateOutput);
@@ -234,6 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.commaStyle.addEventListener('change', updateOutput);
     elements.punctuationStyle.addEventListener('change', updateOutput);
     elements.spaceStyle.addEventListener('change', updateOutput);
+    elements.copyButton.addEventListener('click', copyToClipboard);
 
     const currentTheme = localStorage.getItem('theme');
     if (currentTheme) {
