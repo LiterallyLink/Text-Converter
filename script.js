@@ -45,6 +45,9 @@ document.addEventListener('DOMContentLoaded', () => {
         'bold': {
             transform: (word) => word.split('').map(char => FIRST_LETTER_FONTS['bold'][char] || char).join('')
         },
+        'gothic': {
+            transform: (word) => word.split('').map(char => FIRST_LETTER_FONTS['gothic'][char] || char).join('')
+        },
         'serif-bold': {
             transform: (word) => `<span style="font-weight: bold; font-family: serif;">${word}</span>`
         },
