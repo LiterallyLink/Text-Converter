@@ -16,8 +16,13 @@ document.addEventListener('DOMContentLoaded', () => {
         symbolFrequencySlider: document.getElementById('symbolFrequency'),
         symbolInput: document.getElementById('symbolInput'),
         copyNotification: document.getElementById('copyNotification'),
-        allowRepeatSymbols: document.getElementById('allowRepeatSymbols')
+        allowRepeatSymbols: document.getElementById('allowRepeatSymbols'),
     };
+
+    const changelogModal = document.getElementById('changelogModal');
+    const changelogButton = document.getElementById('changelogButton');
+    const closeButton = document.querySelector('.close-button');
+    const changelogContent = document.getElementById('changelogContent');
 
     // Font Mapping Objects
     const FIRST_LETTER_FONTS = {
@@ -98,6 +103,27 @@ document.addEventListener('DOMContentLoaded', () => {
         'u': '𝙪', 'v': '𝙫', 'w': '𝙬', 'x': '𝙭', 'y': '𝙮', 'z': '𝙯'
     };
 
+    const ITALIC_FONTS = {
+        'A': '𝘈', 'B': '𝘉', 'C': '𝘊', 'D': '𝘋', 'E': '𝘌', 
+        'F': '𝘍', 'G': '𝘎', 'H': '𝘏', 'I': '𝘐', 'J': '𝘑', 
+        'K': '𝘒', 'L': '𝘓', 'M': '𝘔', 'N': '𝘕', 'O': '𝘖', 
+        'P': '𝘗', 'Q': '𝘘', 'R': '𝘙', 'S': '𝘚', 'T': '𝘛', 
+        'U': '𝘜', 'V': '𝘝', 'W': '𝘞', 'X': '𝘟', 'Y': '𝘠', 'Z': '𝘡',
+        'a': '𝘢', 'b': '𝘣', 'c': '𝘤', 'd': '𝘥', 'e': '𝘦', 
+        'f': '𝘧', 'g': '𝘨', 'h': '𝘩', 'i': '𝘪', 'j': '𝘫', 
+        'k': '𝘬', 'l': '𝘭', 'm': '𝘮', 'n': '𝘯', 'o': '𝘰', 
+        'p': '𝘱', 'q': '𝘲', 'r': '𝘳', 's': '𝘴', 't': '𝘵', 
+        'u': '𝘶', 'v': '𝘷', 'w': '𝘸', 'x': '𝘹', 'y': '𝘺', 'z': '𝘻'
+    };
+
+    const CRYPTIC_ITALIC_FONTS = {
+        'A': '𐌀', 'B': '𐌁', 'C': '𐌂', 'D': '𐌃', 'E': '𐌄', 'F': '𐌅',
+        'G': 'Ᏽ', 'H': '𐋅', 'I': '𐌉', 'J': 'Ꮭ', 'K': '𐌊', 'L': '𐌋',
+        'M': '𐌌', 'N': '𐌍', 'O': 'Ꝋ', 'P': '𐌐', 'Q': '𐌒', 'R': '𐌓',
+        'S': '𐌔', 'T': '𐌕', 'U': '𐌵', 'V': 'ᕓ', 'W': 'Ᏸ', 'X': '𐋄',
+        'Y': '𐌙', 'Z': 'Ɀ'
+    };
+
     const UPPERCASE_WORD_STYLES = {
         'bold': {
             transform: (word) => word.split('').map(char => FIRST_LETTER_FONTS['bold'][char] || char).join('')
@@ -113,6 +139,12 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         'bold-italic': {
             transform: (word) => word.split('').map(char => BOLD_ITALIC_FONTS[char] || char).join('')
+        },
+        'italic': {
+            transform: (word) => word.split('').map(char => ITALIC_FONTS[char] || char).join('')
+        },
+        'cryptic-italic': {
+            transform: (word) => word.split('').map(char => CRYPTIC_ITALIC_FONTS[char] || char).join('')
         }
     };
 
@@ -129,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
          "˙⊹",  "⸝⸝ ۫", "︵", "﹏",  "፧", "‹ ‹ ˊ", "❜ ፧", "ゞ", "𐔌⩩",
          "〲", "𓂃", "─┄", "┈", "✱", "♯", "⌇", "◟ ݁", "✦‍    *", "冫",
          " ٫̷ ", "彡", "᭧", "..̲ ̲", "៹", " ̼", ".͟.", "ᝰ", " ⭇ ", "  ݁ ",
-         "𓂅", "❜"
+         "𓂅", "❜", "‿", "ꜜ⠀ꜜ⠀ꜜ", "𒂟", "⊰"
     ];
 
     /**
@@ -211,9 +243,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function addSymbols(text) {
         const activeButton = document.querySelector('.symbol-button.active');
         if (!activeButton || activeButton.id === 'symbolButton1') return text;
-
+    
         const frequency = elements.symbolFrequencySlider.value / 100;
-        const words = text.split(' ');
+        const spaceStyle = elements.spaceStyle.value;
+        const spaceChar = SPACE_STYLES[spaceStyle] || ' ';
+        
+        // Split text by any type of space character
+        const words = text.split(/\s+/);
         const allowRepeats = elements.allowRepeatSymbols.checked;
         
         if (activeButton.id === 'symbolButton2') {
@@ -221,14 +257,12 @@ document.addEventListener('DOMContentLoaded', () => {
             let availableSymbols = [...RANDOM_SYMBOLS];
             let currentIndex = 0;
             
-            return words.map(word => {
+            return words.map((word, index) => {
                 if (Math.random() < frequency) {
                     let symbol;
                     if (allowRepeats) {
-                        // Randomly select any symbol
                         symbol = RANDOM_SYMBOLS[Math.floor(Math.random() * RANDOM_SYMBOLS.length)];
                     } else {
-                        // Use each symbol once before repeating
                         if (currentIndex >= availableSymbols.length) {
                             availableSymbols = [...RANDOM_SYMBOLS];
                             currentIndex = 0;
@@ -238,10 +272,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         availableSymbols.splice(randomIndex, 1);
                         currentIndex++;
                     }
-                    return `${word} ${symbol}`;
+                    return index === words.length - 1 ? `${word}${spaceChar}${symbol}` : `${word}${spaceChar}${symbol}${spaceChar}`;
                 }
-                return word;
-            }).join(' ');
+                return index === words.length - 1 ? word : word + spaceChar;
+            }).join('');
         } else if (activeButton.id === 'symbolButton3') {
             // Custom symbols
             const customSymbols = elements.symbolInput.value.split('');
@@ -249,14 +283,13 @@ document.addEventListener('DOMContentLoaded', () => {
             
             let availableSymbols = [...customSymbols];
             let currentIndex = 0;
-            return words.map(word => {
+            
+            return words.map((word, index) => {
                 if (Math.random() < frequency) {
                     let symbol;
                     if (allowRepeats) {
-                        // Randomly select any symbol
                         symbol = customSymbols[Math.floor(Math.random() * customSymbols.length)];
                     } else {
-                        // Use each symbol once before repeating
                         if (currentIndex >= availableSymbols.length) {
                             availableSymbols = [...customSymbols];
                             currentIndex = 0;
@@ -266,10 +299,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         availableSymbols.splice(randomIndex, 1);
                         currentIndex++;
                     }
-                    return `${word} ${symbol}`;
+                    return index === words.length - 1 ? `${word}${spaceChar}${symbol}` : `${word}${spaceChar}${symbol}${spaceChar}`;
                 }
-                return word;
-            }).join(' ');
+                return index === words.length - 1 ? word : word + spaceChar;
+            }).join('');
         }
         
         return text;
@@ -284,7 +317,8 @@ document.addEventListener('DOMContentLoaded', () => {
             elements.output.innerHTML = '';
             return;
         }
-
+    
+        // Apply text transformations in the correct order
         processedText = replaceFirstLetter(
             processedText, 
             elements.firstLetterFont.value
@@ -301,12 +335,14 @@ document.addEventListener('DOMContentLoaded', () => {
             processedText,
             elements.punctuationStyle.value
         );
+        // Add symbols before replacing spaces
+        processedText = addSymbols(processedText);
+        // Replace spaces last to ensure consistent spacing
         processedText = replaceSpaces(
             processedText,
             elements.spaceStyle.value
         );
-        processedText = addSymbols(processedText);
-
+    
         elements.output.innerHTML = processedText;
     }
 
@@ -379,5 +415,31 @@ document.addEventListener('DOMContentLoaded', () => {
         const theme = this.checked ? 'dark' : 'light';
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem('theme', theme);
+    });
+    
+    async function loadChangelog() {
+        try {
+            const response = await fetch('changelog.txt');
+            const text = await response.text();
+            changelogContent.innerHTML = text.split('\n').map(line => `<p>${line}</p>`).join('');
+        } catch (error) {
+            changelogContent.innerHTML = '<p>Error loading changelog.</p>';
+        }
+    }
+
+    changelogButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        changelogModal.style.display = 'block';
+        loadChangelog();
+    });
+
+    closeButton.addEventListener('click', () => {
+        changelogModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (e) => {
+        if (e.target === changelogModal) {
+            changelogModal.style.display = 'none';
+        }
     });
 });
