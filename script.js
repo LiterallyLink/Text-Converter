@@ -1,6 +1,25 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const themeToggle = document.getElementById('checkbox');
-    // First letter font mappings with support for both lowercase and uppercase
+    // DOM Elements
+    const elements = {
+        inputText: document.getElementById('inputText'),
+        firstLetterFont: document.getElementById('firstLetterFont'),
+        commaStyle: document.getElementById('commaStyle'),
+        punctuationStyle: document.getElementById('punctuationStyle'),
+        spaceStyle: document.getElementById('spaceStyle'),
+        symbolStyle: document.getElementById('symbolStyle'),
+        uppercaseWordStyle: document.getElementById('uppercaseWordStyle'),
+        output: document.getElementById('output'),
+        copyButton: document.getElementById('copyButton'),
+        themeToggle: document.getElementById('checkbox'),
+        symbolButtons: document.querySelectorAll('.symbol-button'),
+        symbolControls: document.getElementById('symbolControls'),
+        symbolFrequencySlider: document.getElementById('symbolFrequency'),
+        symbolInput: document.getElementById('symbolInput'),
+        copyNotification: document.getElementById('copyNotification'),
+        allowRepeatSymbols: document.getElementById('allowRepeatSymbols')
+    };
+
+    // Font Mapping Objects
     const FIRST_LETTER_FONTS = {
         'cursive': {
             'a': '𝓪', 'b': '𝓫', 'c': '𝓬', 'd': '𝓭', 'e': '𝓮', 
@@ -106,18 +125,12 @@ document.addEventListener('DOMContentLoaded', () => {
         'en-quad': '\u2000'         // En quad space
     };
 
-    // DOM Elements
-    const elements = {
-        inputText: document.getElementById('inputText'),
-        firstLetterFont: document.getElementById('firstLetterFont'),
-        commaStyle: document.getElementById('commaStyle'),
-        punctuationStyle: document.getElementById('punctuationStyle'),
-        spaceStyle: document.getElementById('spaceStyle'),
-        uppercaseWordStyle: document.getElementById('uppercaseWordStyle'),
-        output: document.getElementById('output'),
-        copyButton: document.getElementById('copyButton'),
-        inputText: document.getElementById('inputText')
-    };
+    const RANDOM_SYMBOLS = [
+         "˙⊹",  "⸝⸝ ۫", "︵", "﹏",  "፧", "‹ ‹ ˊ", "❜ ፧", "ゞ", "𐔌⩩",
+         "〲", "𓂃", "─┄", "┈", "✱", "♯", "⌇", "◟ ݁", "✦‍    *", "冫",
+         " ٫̷ ", "彡", "᭧", "..̲ ̲", "៹", " ̼", ".͟.", "ᝰ", " ⭇ ", "  ݁ ",
+         "𓂅", "❜"
+    ];
 
     /**
      * Replaces the first letter with a styled version based on selected font
@@ -145,7 +158,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const styleFunction = UPPERCASE_WORD_STYLES[uppercaseStyle].transform;
         
         return text.split(/\b/).map(word => {
-            // Check if word is completely uppercase and not empty
             if (word.length > 0 && word === word.toUpperCase() && /[A-Z]/.test(word)) {
                 return styleFunction(word);
             }
@@ -172,10 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function replacePunctuation(text, punctuationStyle) {
         if (!punctuationStyle) return text;
 
-        // Split the style into two options
         const [exclamationStyle, questionStyle] = punctuationStyle.split(',');
-
-        // Replace punctuation with specific styles
         return text
             .replace(/!/g, exclamationStyle)
             .replace(/\?/g, questionStyle);
@@ -195,16 +204,87 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
+     * Adds symbols to text based on selected style and frequency
+     * @param {string} text - Input text
+     * @returns {string} Text with added symbols
+     */
+    function addSymbols(text) {
+        const activeButton = document.querySelector('.symbol-button.active');
+        if (!activeButton || activeButton.id === 'symbolButton1') return text;
+
+        const frequency = elements.symbolFrequencySlider.value / 100;
+        const words = text.split(' ');
+        const allowRepeats = elements.allowRepeatSymbols.checked;
+        
+        if (activeButton.id === 'symbolButton2') {
+            // Random symbols
+            let availableSymbols = [...RANDOM_SYMBOLS];
+            let currentIndex = 0;
+            
+            return words.map(word => {
+                if (Math.random() < frequency) {
+                    let symbol;
+                    if (allowRepeats) {
+                        // Randomly select any symbol
+                        symbol = RANDOM_SYMBOLS[Math.floor(Math.random() * RANDOM_SYMBOLS.length)];
+                    } else {
+                        // Use each symbol once before repeating
+                        if (currentIndex >= availableSymbols.length) {
+                            availableSymbols = [...RANDOM_SYMBOLS];
+                            currentIndex = 0;
+                        }
+                        const randomIndex = Math.floor(Math.random() * availableSymbols.length);
+                        symbol = availableSymbols[randomIndex];
+                        availableSymbols.splice(randomIndex, 1);
+                        currentIndex++;
+                    }
+                    return `${word} ${symbol}`;
+                }
+                return word;
+            }).join(' ');
+        } else if (activeButton.id === 'symbolButton3') {
+            // Custom symbols
+            const customSymbols = elements.symbolInput.value.split('');
+            if (customSymbols.length === 0) return text;
+            
+            let availableSymbols = [...customSymbols];
+            let currentIndex = 0;
+            return words.map(word => {
+                if (Math.random() < frequency) {
+                    let symbol;
+                    if (allowRepeats) {
+                        // Randomly select any symbol
+                        symbol = customSymbols[Math.floor(Math.random() * customSymbols.length)];
+                    } else {
+                        // Use each symbol once before repeating
+                        if (currentIndex >= availableSymbols.length) {
+                            availableSymbols = [...customSymbols];
+                            currentIndex = 0;
+                        }
+                        const randomIndex = Math.floor(Math.random() * availableSymbols.length);
+                        symbol = availableSymbols[randomIndex];
+                        availableSymbols.splice(randomIndex, 1);
+                        currentIndex++;
+                    }
+                    return `${word} ${symbol}`;
+                }
+                return word;
+            }).join(' ');
+        }
+        
+        return text;
+    }
+
+    /**
      * Updates the output with processed text
      */
     function updateOutput() {
-        const inputText = elements.inputText.value;
-        if (!inputText) {
+        let processedText = elements.inputText.value;
+        if (!processedText) {
             elements.output.innerHTML = '';
             return;
         }
 
-        let processedText = inputText;
         processedText = replaceFirstLetter(
             processedText, 
             elements.firstLetterFont.value
@@ -225,29 +305,49 @@ document.addEventListener('DOMContentLoaded', () => {
             processedText,
             elements.spaceStyle.value
         );
+        processedText = addSymbols(processedText);
 
         elements.output.innerHTML = processedText;
     }
 
+    /**
+     * Copies the output text to clipboard
+     */
     async function copyToClipboard() {
         const textToCopy = elements.output.textContent;
-        const notification = document.getElementById('copyNotification');
         
         try {
             await navigator.clipboard.writeText(textToCopy);
             elements.copyButton.classList.add('copied');
-            notification.classList.add('show');
+            elements.copyNotification.classList.add('show');
             
             setTimeout(() => {
                 elements.copyButton.classList.remove('copied');
-                notification.classList.remove('show');
+                elements.copyNotification.classList.remove('show');
             }, 2000);
         } catch (err) {
             console.error('Failed to copy text:', err);
         }
     }
 
-    // Add event listeners
+    /**
+     * Updates symbol controls visibility
+     * @param {string} buttonId - ID of the clicked button
+     */
+    function updateSymbolControls(buttonId) {
+        elements.symbolButtons.forEach(btn => btn.classList.remove('active'));
+        const button = document.getElementById(buttonId);
+        if (button) button.classList.add('active');
+        
+        if (buttonId === 'symbolButton2' || buttonId === 'symbolButton3') {
+            elements.symbolControls.style.display = 'block';
+            elements.symbolInput.style.display = buttonId === 'symbolButton3' ? 'block' : 'none';
+        } else {
+            elements.symbolControls.style.display = 'none';
+        }
+    }
+
+    // Event Listeners
     elements.inputText.addEventListener('input', updateOutput);
     elements.firstLetterFont.addEventListener('change', updateOutput);
     elements.uppercaseWordStyle.addEventListener('change', updateOutput);
@@ -255,22 +355,29 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.punctuationStyle.addEventListener('change', updateOutput);
     elements.spaceStyle.addEventListener('change', updateOutput);
     elements.copyButton.addEventListener('click', copyToClipboard);
+    elements.symbolFrequencySlider.addEventListener('input', updateOutput);
+    elements.symbolInput.addEventListener('input', updateOutput);
+    elements.allowRepeatSymbols.addEventListener('change', updateOutput);
 
+    elements.symbolButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            updateSymbolControls(this.id);
+            updateOutput();
+        });
+    });
+
+    // Theme handling
     const currentTheme = localStorage.getItem('theme');
     if (currentTheme) {
         document.documentElement.setAttribute('data-theme', currentTheme);
         if (currentTheme === 'dark') {
-            themeToggle.checked = true;
+            elements.themeToggle.checked = true;
         }
     }
     
-    themeToggle.addEventListener('change', function() {
-        if (this.checked) {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            localStorage.setItem('theme', 'dark');
-        } else {
-            document.documentElement.setAttribute('data-theme', 'light');
-            localStorage.setItem('theme', 'light');
-        }
+    elements.themeToggle.addEventListener('change', function() {
+        const theme = this.checked ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
     });
 });
