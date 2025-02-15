@@ -96,11 +96,13 @@
                 aria-label="Uppercase word style"
             >
                 <option value="">Select Uppercase Word Style</option>
-                <option value="bold">Bold</option>
                 <option value="gothic">Gothic</option>
+                <option value="bold">Bold</option>
                 <option value="serif-bold">Serif Bold</option>
+                <option value="italic">Italic</option>
                 <option value="serif-bold-italic">Serif Bold Italic</option>
                 <option value="bold-italic">Bold Italic</option>
+                <option value="cryptic-italic">Cryptic Italic</option>
             </select>
 
             <div class="symbol-section">
@@ -174,6 +176,16 @@
         <a href="https://docs.google.com/forms/d/e/1FAIpQLSfPW2oq5iwUqbweNAUosl_ZyRAl-ABHRKxGSbUMNEtX6TMfHg/viewform?usp=dialog" class="footer-link" target="_blank" rel="noopener noreferrer">Feedback</a>
         <span class="footer-separator">•</span>
         <a href="https://docs.google.com/forms/d/e/1FAIpQLSePP9WHF9Yf3uIw8F_ofU12ngmP-lhq_z_HCh1omUlq4BUOlQ/viewform?usp=dialog" class="footer-link" target="_blank" rel="noopener noreferrer">Report a Bug</a>
+        <span class="footer-separator">•</span>
+        <a href="#" class="footer-link" id="changelogButton">Changelog</a>
+        
+        <div id="changelogModal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <h2>Changelog</h2>
+                <div id="changelogContent"></div>
+            </div>
+        </div>
     </footer>
 
     <script src="script.js"></script>

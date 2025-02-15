@@ -1,0 +1,5 @@
+Version 1.1.0 (2024-02-15)
+Implemented a Changelog.
+Resolved issues with spacing styles intefering with Symbol injection.
+Added 2 New Fonts to Uppercase Word Style, Cryptic Italic & Italic.
+Added New Symbols.
