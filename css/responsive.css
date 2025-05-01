@@ -1,0 +1,44 @@
+/* Responsive CSS - Media queries for different screen sizes */
+
+@media screen and (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        padding: 15px;
+    }
+
+    input, select {
+        padding: 8px;
+    }
+
+    #output {
+        font-size: 16px;
+        padding: 10px;
+    }
+    
+    .symbol-buttons {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .symbol-button {
+        width: 100%;
+    }
+
+    .checkbox-container {
+        margin: 10px 0;
+    }
+    
+    .theme-switch-wrapper {
+        right: 10px;
+        top: 10px;
+    }
+    
+    .modal-content {
+        width: 90%;
+        margin: 20% auto;
+        padding: 15px;
+    }
+}
