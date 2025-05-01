@@ -3,3 +3,9 @@ Implemented a Changelog.
 Resolved issues with spacing styles intefering with Symbol injection.
 Added 2 New Fonts to Uppercase Word Style, Cryptic Italic & Italic.
 Added New Symbols.
+
+Version 1.2.0 (2025-04-30)
+Reorganized codebase into modular file structure.
+Separated CSS into logical components.
+Split JavaScript into functional modules.
+Improved code organization and maintainability.
