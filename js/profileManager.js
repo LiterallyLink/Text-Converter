@@ -400,7 +400,7 @@ function initProfileManager(elements) {
             }
         } else {
             // If no profile is selected or it's the create_new option, inform the user
-            alert('Please select a profile to save your settings to, or create a new profile from the dropdown.');
+            alert('Please select a profile to save your settings to, or create a new profile.');
         }
     });
     
@@ -432,7 +432,7 @@ function initProfileManager(elements) {
                 updateProfileSelect(elements.profileSelect, profileName);
             }
         } else {
-            alert('Please enter a profile name.');
+            alert('Please enter a name for your profile.');
         }
     });
     
