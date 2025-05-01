@@ -5,7 +5,6 @@ Added 2 New Fonts to Uppercase Word Style, Cryptic Italic & Italic.
 Added New Symbols.
 
 Version 1.2.0 (2025-04-30)
-Reorganized codebase into modular file structure.
-Separated CSS into logical components.
-Split JavaScript into functional modules.
-Improved code organization and maintainability.
+Added profile system for storing settings with up to 5 savable profiles.
+Implemented cookie-based storage for persistent profiles across sessions.
+Added Privacy Policy.
