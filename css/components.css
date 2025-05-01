@@ -29,6 +29,59 @@ select {
     background-position: right 10px center;
 }
 
+/* Profile Section Styles */
+.profile-section {
+    margin-bottom: 20px;
+}
+
+.profile-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center; /* This ensures vertical alignment */
+}
+
+.profile-controls select {
+    flex-grow: 1;
+    margin: 10px 0; /* Keep consistent margin */
+}
+
+.profile-button {
+    padding: 10px 15px;
+    border: 1px solid var(--input-border);
+    background-color: var(--container-bg-color);
+    color: var(--text-color);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 10px 0; /* Match the select element margin */
+    height: calc(100% - 20px); /* Account for margins */
+    align-self: center; /* Ensure self-alignment */
+}
+
+/* Make sure select and buttons have the same height */
+.profile-container select,
+.profile-button {
+    box-sizing: border-box;
+    height: 41px; /* Set an explicit height that works for both */
+}
+
+.profile-button:hover {
+    background-color: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+
+.profile-name-input {
+    display: none;
+    width: 100%;
+    margin-top: 10px;
+}
+
 /* Output Area */
 .output-container {
     position: relative;
@@ -396,4 +449,73 @@ select {
 
 .close-button:hover {
     color: var(--accent-color);
+}
+
+/* Profile name dialog styles */
+.profile-dialog {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-dialog.show {
+    display: flex;
+}
+
+.profile-dialog-content {
+    background-color: var(--container-bg-color);
+    padding: 20px;
+    border-radius: var(--border-radius);
+    width: 80%;
+    max-width: 400px;
+    box-shadow: 0 4px 6px var(--shadow-color);
+}
+
+.profile-dialog-content h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.profile-dialog-content input {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.profile-dialog-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.profile-dialog-button {
+    padding: 8px 16px;
+    border: 1px solid var(--input-border);
+    background-color: var(--container-bg-color);
+    color: var(--text-color);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.profile-dialog-button:hover {
+    background-color: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+
+.profile-dialog-button.cancel {
+    background-color: transparent;
+}
+
+.profile-dialog-button.save {
+    background-color: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
 }

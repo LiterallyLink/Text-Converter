@@ -22,15 +22,23 @@ document.addEventListener('DOMContentLoaded', () => {
         symbolInput: document.getElementById('symbolInput'),
         copyNotification: document.getElementById('copyNotification'),
         allowRepeatSymbols: document.getElementById('allowRepeatSymbols'),
+        profileSelect: document.getElementById('profileSelect'),
+        saveProfileButton: document.getElementById('saveProfileButton'),
+        deleteProfileButton: document.getElementById('deleteProfileButton'),
     };
 
     const changelogModal = document.getElementById('changelogModal');
     const changelogButton = document.getElementById('changelogButton');
-    const closeButton = document.querySelector('.close-button');
+    const privacyPolicyModal = document.getElementById('privacyPolicyModal');
+    const privacyPolicyButton = document.getElementById('privacyPolicyButton');
+    const closeButtons = document.querySelectorAll('.close-button');
     const changelogContent = document.getElementById('changelogContent');
 
     // Initialize theme
     loadTheme(elements);
+    
+    // Initialize profile manager
+    initProfileManager(elements);
 
     // Event Listeners for Text Transformations
     elements.inputText.addEventListener('input', () => updateOutput(elements));
@@ -58,12 +66,32 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.themeToggle.addEventListener('change', handleThemeChange);
     
     // Changelog Modal Events
-    changelogButton.addEventListener('click', (e) => 
-        openChangelogModal(e, changelogModal, changelogContent));
+    changelogButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        changelogModal.style.display = 'block';
+        loadChangelog(changelogContent);
+    });
     
-    closeButton.addEventListener('click', () => 
-        closeChangelogModal(changelogModal));
+    // Privacy Policy Modal Events
+    privacyPolicyButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        privacyPolicyModal.style.display = 'block';
+    });
     
-    window.addEventListener('click', (e) => 
-        handleWindowClick(e, changelogModal));
+    // Close buttons for all modals
+    closeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            this.closest('.modal').style.display = 'none';
+        });
+    });
+    
+    // Close modals when clicking outside
+    window.addEventListener('click', (e) => {
+        if (e.target === changelogModal) {
+            changelogModal.style.display = 'none';
+        }
+        if (e.target === privacyPolicyModal) {
+            privacyPolicyModal.style.display = 'none';
+        }
+    });
 });

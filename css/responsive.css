@@ -41,4 +41,20 @@
         margin: 20% auto;
         padding: 15px;
     }
+    
+    /* Profile section responsive styles */
+    .profile-controls {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .profile-button {
+        width: 100%;
+        margin-top: 5px;
+    }
+    
+    .profile-dialog-content {
+        width: 90%;
+        padding: 15px;
+    }
 }

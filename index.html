@@ -33,6 +33,26 @@
             <h1>Text Converter</h1>
         </header>
         
+        <!-- New Profile Management Section -->
+        <section class="profile-section">
+            <div class="profile-container">
+                <label for="profileSelect">Profile</label>
+                <div class="profile-controls">
+                    <select id="profileSelect" aria-label="Select saved profile">
+                        <option value="">Default Profile</option>
+                        <option value="create_new">Create a New Profile</option>
+                        <!-- Profiles will be loaded here -->
+                    </select>
+                    <button id="saveProfileButton" class="profile-button" aria-label="Save current settings to selected profile">
+                        Save
+                    </button>
+                    <button id="deleteProfileButton" class="profile-button" aria-label="Delete selected profile">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </section>
+        
         <section>
             <label for="inputText" class="sr-only">Enter your text</label>
             <input 
@@ -174,6 +194,7 @@
             </div>
         </section>
         <div class="notification" id="copyNotification">Copied to Clipboard!</div>
+        <div class="notification" id="profileNotification">Profile saved!</div>
     </main>
 
     <footer class="footer">
@@ -182,6 +203,8 @@
         <a href="https://docs.google.com/forms/d/e/1FAIpQLSePP9WHF9Yf3uIw8F_ofU12ngmP-lhq_z_HCh1omUlq4BUOlQ/viewform?usp=dialog" class="footer-link" target="_blank" rel="noopener noreferrer">Report a Bug</a>
         <span class="footer-separator">•</span>
         <a href="#" class="footer-link" id="changelogButton">Changelog</a>
+        <span class="footer-separator">•</span>
+        <a href="#" class="footer-link" id="privacyPolicyButton">Privacy Policy</a>
         
         <div id="changelogModal" class="modal">
             <div class="modal-content">
@@ -190,12 +213,37 @@
                 <div id="changelogContent"></div>
             </div>
         </div>
+
+        <div id="privacyPolicyModal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <h2>Privacy Policy</h2>
+                <div id="privacyPolicyContent">
+                    <p>This Text Converter application is designed with your privacy in mind. We want to be clear about how we handle your data:</p>
+                    
+                    <h3>Data Storage</h3>
+                    <p>All your settings and profiles are stored exclusively in cookies on your local device. We do not transmit or store any of your data on external servers or databases.</p>
+                    
+                    <h3>Profiles</h3>
+                    <p>You can save up to 5 profiles with your preferred text conversion settings. These profiles are stored as cookies on your device.</p>
+                    
+                    <h3>Cookie Usage</h3>
+                    <p>Cookies are used solely to remember your preferences and profiles. If you clear your browser cookies or history, your saved profiles will be erased.</p>
+                    
+                    <h3>Data Collection</h3>
+                    <p>We do not collect any personal information, track your usage, or analyze your text input in any way.</p>
+                    
+                    <p>By using this application, you acknowledge and agree to this privacy policy.</p>
+                </div>
+            </div>
+        </div>
     </footer>
 
     <!-- JavaScript Files -->
     <script src="js/fontMappings.js"></script>
     <script src="js/textTransformations.js"></script>
     <script src="js/uiHandlers.js"></script>
+    <script src="js/profileManager.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
