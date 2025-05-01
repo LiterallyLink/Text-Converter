@@ -9,6 +9,5 @@ Added profile system for storing settings with up to 5 savable profiles.
 Implemented cookie-based storage for persistent profiles across sessions.
 Added Privacy Policy.
 
-
 Version 1.2.1 (2025-04-30)
 Hotfixed profiles not working on mobile devices.
