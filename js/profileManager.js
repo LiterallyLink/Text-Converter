@@ -15,7 +15,12 @@ const COOKIE_EXPIRATION_DAYS = 365;
  */
 function getProfiles() {
     const profilesCookie = getCookie('textConverterProfiles');
-    return profilesCookie ? JSON.parse(profilesCookie) : {};
+    try {
+        return profilesCookie ? JSON.parse(profilesCookie) : {};
+    } catch (e) {
+        console.error('Error parsing profiles cookie:', e);
+        return {};
+    }
 }
 
 /**
@@ -23,7 +28,13 @@ function getProfiles() {
  * @param {Object} profiles - Object containing all profiles to save
  */
 function saveProfiles(profiles) {
-    setCookie('textConverterProfiles', JSON.stringify(profiles), COOKIE_EXPIRATION_DAYS);
+    try {
+        setCookie('textConverterProfiles', JSON.stringify(profiles), COOKIE_EXPIRATION_DAYS);
+        return true;
+    } catch (e) {
+        console.error('Error saving profiles:', e);
+        return false;
+    }
 }
 
 /**
@@ -112,12 +123,16 @@ function saveProfile(profileName, elements) {
     
     // Save current settings
     profiles[profileName] = getCurrentSettings(elements);
-    saveProfiles(profiles);
+    const saveSuccess = saveProfiles(profiles);
     
-    // Update profile select dropdown
-    updateProfileSelect(elements.profileSelect, profileName);
-    
-    return true;
+    if (saveSuccess) {
+        // Update profile select dropdown
+        updateProfileSelect(elements.profileSelect, profileName);
+        return true;
+    } else {
+        alert('Failed to save profile. This might be due to browser storage limitations or privacy settings.');
+        return false;
+    }
 }
 
 /**
@@ -132,9 +147,19 @@ function deleteProfile(profileName, elements) {
     const profiles = getProfiles();
     if (profiles[profileName]) {
         delete profiles[profileName];
-        saveProfiles(profiles);
-        updateProfileSelect(elements.profileSelect);
-        return true;
+        const saveSuccess = saveProfiles(profiles);
+        
+        if (saveSuccess) {
+            // Reset the last selected profile if it was the deleted one
+            if (elements.lastSelectedProfile === profileName) {
+                elements.lastSelectedProfile = '';
+            }
+            updateProfileSelect(elements.profileSelect);
+            return true;
+        } else {
+            alert('Failed to delete profile. This might be due to browser storage limitations or privacy settings.');
+            return false;
+        }
     }
     
     return false;
@@ -146,6 +171,9 @@ function deleteProfile(profileName, elements) {
  * @param {string} [selectedProfile] - Optional profile to select
  */
 function updateProfileSelect(selectElement, selectedProfile = null) {
+    // Store the options that should be preserved
+    const defaultOption = selectElement.options[0]; // Default profile option
+    
     // Save the current selection if no profile is specified
     if (!selectedProfile) {
         selectedProfile = selectElement.value;
@@ -155,10 +183,11 @@ function updateProfileSelect(selectElement, selectedProfile = null) {
         }
     }
     
-    // Clear existing options except the default
-    while (selectElement.options.length > 1) {
-        selectElement.remove(1);
-    }
+    // Clear all existing options
+    selectElement.innerHTML = '';
+    
+    // Add back the default option
+    selectElement.appendChild(defaultOption);
     
     // Add the "Create a New Profile" option
     const createNewOption = document.createElement('option');
@@ -168,7 +197,11 @@ function updateProfileSelect(selectElement, selectedProfile = null) {
     
     // Add profile options
     const profiles = getProfiles();
-    Object.keys(profiles).forEach(profile => {
+    
+    // Sort profile names alphabetically
+    const profileNames = Object.keys(profiles).sort();
+    
+    profileNames.forEach(profile => {
         const option = document.createElement('option');
         option.value = profile;
         option.textContent = profile;
@@ -201,32 +234,69 @@ function showNotification(notificationElement, message = null) {
 }
 
 /**
- * Sets a cookie
+ * Sets a cookie with proper URL encoding
  * @param {string} name - Cookie name
  * @param {string} value - Cookie value
  * @param {number} days - Days until expiration
  */
 function setCookie(name, value, days) {
-    const date = new Date();
-    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    const expires = `expires=${date.toUTCString()}`;
-    document.cookie = `${name}=${value};${expires};path=/;SameSite=Strict`;
+    try {
+        const date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        const expires = `expires=${date.toUTCString()}`;
+        const encodedValue = encodeURIComponent(value);
+        document.cookie = `${name}=${encodedValue};${expires};path=/;SameSite=Strict`;
+        return true;
+    } catch (e) {
+        console.error('Error setting cookie:', e);
+        return false;
+    }
 }
 
 /**
- * Gets a cookie value
+ * Gets a cookie value with proper decoding
  * @param {string} name - Cookie name
  * @returns {string|null} Cookie value or null if not found
  */
 function getCookie(name) {
-    const nameEQ = `${name}=`;
-    const ca = document.cookie.split(';');
-    for (let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    try {
+        const nameEQ = `${name}=`;
+        const ca = document.cookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) === 0) {
+                const encodedValue = c.substring(nameEQ.length, c.length);
+                return decodeURIComponent(encodedValue);
+            }
+        }
+        return null;
+    } catch (e) {
+        console.error('Error getting cookie:', e);
+        return null;
     }
-    return null;
+}
+
+/**
+ * Tests if cookies are available and working
+ * @returns {boolean} True if cookies are supported and enabled
+ */
+function testCookieSupport() {
+    try {
+        // Try to set a test cookie
+        const testValue = "test";
+        setCookie("cookieTest", testValue, 1);
+        const cookieVal = getCookie("cookieTest");
+        
+        // Clean up test cookie
+        document.cookie = "cookieTest=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        
+        // Check if we got the same value back
+        return cookieVal === testValue;
+    } catch (e) {
+        console.error("Cookie test failed:", e);
+        return false;
+    }
 }
 
 /**
@@ -234,6 +304,26 @@ function getCookie(name) {
  * @param {Object} elements - DOM elements object
  */
 function initProfileManager(elements) {
+    // Check if cookies are supported
+    const cookiesSupported = testCookieSupport();
+    if (!cookiesSupported) {
+        // Show a notice about cookie limitations
+        const cookieWarning = document.createElement('div');
+        cookieWarning.className = 'notification';
+        cookieWarning.style.backgroundColor = '#f44336';
+        cookieWarning.textContent = 'Cookie storage not available. Profile saving won\'t work.';
+        cookieWarning.style.opacity = '1';
+        cookieWarning.style.visibility = 'visible';
+        document.body.appendChild(cookieWarning);
+        
+        setTimeout(() => {
+            cookieWarning.style.opacity = '0';
+            setTimeout(() => {
+                cookieWarning.remove();
+            }, 1000);
+        }, 5000);
+    }
+    
     // Track the last selected profile
     elements.lastSelectedProfile = '';
     
@@ -268,15 +358,24 @@ function initProfileManager(elements) {
     // Initialize profile select
     updateProfileSelect(elements.profileSelect);
     
-    // Profile select change event
-    elements.profileSelect.addEventListener('change', function() {
+    // Profile select change event with improved mobile handling
+    elements.profileSelect.addEventListener('change', function(e) {
+        e.preventDefault(); // Prevent default form submission behavior
+        
         if (this.value === 'create_new') {
             // Show dialog to create a new profile
             elements.profileNameInput.value = '';
             elements.profileDialog.classList.add('show');
-            elements.profileNameInput.focus();
+            
+            // On mobile, we need to be careful with focus as it can trigger virtual keyboard
+            if (window.innerWidth > 768) {
+                elements.profileNameInput.focus();
+            }
+            
             // Reset selection to previous value after triggering dialog
-            updateProfileSelect(elements.profileSelect, elements.lastSelectedProfile || '');
+            setTimeout(() => {
+                updateProfileSelect(elements.profileSelect, elements.lastSelectedProfile || '');
+            }, 0);
         } else if (this.value) {
             // Load the selected profile
             elements.lastSelectedProfile = this.value;
@@ -288,8 +387,10 @@ function initProfileManager(elements) {
         }
     });
     
-    // Save profile button click - saves settings to current profile
-    elements.saveProfileButton.addEventListener('click', function() {
+    // Save profile button click with improved error handling
+    elements.saveProfileButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        
         const selectedProfile = elements.profileSelect.value;
         
         if (selectedProfile && selectedProfile !== 'create_new') {
@@ -303,10 +404,12 @@ function initProfileManager(elements) {
         }
     });
     
-    // Delete profile button click
-    elements.deleteProfileButton.addEventListener('click', function() {
+    // Delete profile button click with improved state management
+    elements.deleteProfileButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        
         const selectedProfile = elements.profileSelect.value;
-        if (selectedProfile) {
+        if (selectedProfile && selectedProfile !== 'create_new') {
             if (confirm(`Are you sure you want to delete the profile "${selectedProfile}"?`)) {
                 if (deleteProfile(selectedProfile, elements)) {
                     showNotification(elements.profileNotification, 'Profile deleted!');
@@ -317,7 +420,7 @@ function initProfileManager(elements) {
         }
     });
     
-    // Confirm profile creation
+    // Confirm profile creation with better error handling
     elements.confirmProfileButton.addEventListener('click', function() {
         const profileName = elements.profileNameInput.value.trim();
         if (profileName) {
@@ -349,6 +452,14 @@ function initProfileManager(elements) {
     elements.profileNameInput.addEventListener('keyup', function(event) {
         if (event.key === 'Enter') {
             elements.confirmProfileButton.click();
+        }
+    });
+    
+    // Handle browser back button to avoid weird states
+    window.addEventListener('popstate', function() {
+        // If the dialog is open, close it
+        if (elements.profileDialog.classList.contains('show')) {
+            elements.profileDialog.classList.remove('show');
         }
     });
 }
