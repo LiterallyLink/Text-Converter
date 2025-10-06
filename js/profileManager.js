@@ -166,19 +166,16 @@ function deleteProfile(profileName, elements) {
 }
 
 /**
- * Updates the profile selection dropdown
+ * Updates the profile selection dropdown with import/export options
  * @param {HTMLElement} selectElement - The profile select dropdown
  * @param {string} [selectedProfile] - Optional profile to select
  */
 function updateProfileSelect(selectElement, selectedProfile = null) {
-    // Store the options that should be preserved
-    const defaultOption = selectElement.options[0]; // Default profile option
-    
-    // Save the current selection if no profile is specified
+    // Store the current selection if no profile is specified
     if (!selectedProfile) {
         selectedProfile = selectElement.value;
-        // Don't keep 'create_new' as the selected value
-        if (selectedProfile === 'create_new') {
+        // Don't keep special actions as the selected value
+        if (['create_new', 'export_current', 'import_profiles'].includes(selectedProfile)) {
             selectedProfile = '';
         }
     }
@@ -186,10 +183,12 @@ function updateProfileSelect(selectElement, selectedProfile = null) {
     // Clear all existing options
     selectElement.innerHTML = '';
     
-    // Add back the default option
+    // Add default options
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = 'Default Profile';
     selectElement.appendChild(defaultOption);
     
-    // Add the "Create a New Profile" option
     const createNewOption = document.createElement('option');
     createNewOption.value = 'create_new';
     createNewOption.textContent = 'Create a New Profile';
@@ -197,8 +196,6 @@ function updateProfileSelect(selectElement, selectedProfile = null) {
     
     // Add profile options
     const profiles = getProfiles();
-    
-    // Sort profile names alphabetically
     const profileNames = Object.keys(profiles).sort();
     
     profileNames.forEach(profile => {
@@ -207,6 +204,24 @@ function updateProfileSelect(selectElement, selectedProfile = null) {
         option.textContent = profile;
         selectElement.appendChild(option);
     });
+    
+    // Add separator and import/export options
+    if (profileNames.length > 0 || selectedProfile) {
+        const separator = document.createElement('option');
+        separator.disabled = true;
+        separator.textContent = '━━━━━━━━━━━━━━━━━━';
+        selectElement.appendChild(separator);
+    }
+    
+    const exportCurrentOption = document.createElement('option');
+    exportCurrentOption.value = 'export_current';
+    exportCurrentOption.textContent = '📤 Export Current Profile';
+    selectElement.appendChild(exportCurrentOption);
+    
+    const importOption = document.createElement('option');
+    importOption.value = 'import_profiles';
+    importOption.textContent = '📥 Import Profiles';
+    selectElement.appendChild(importOption);
     
     // Set selected profile if it exists
     if (selectedProfile && (selectedProfile === '' || profiles[selectedProfile])) {
@@ -358,11 +373,13 @@ function initProfileManager(elements) {
     // Initialize profile select
     updateProfileSelect(elements.profileSelect);
     
-    // Profile select change event with improved mobile handling
+    // Profile select change event with improved mobile handling and import/export
     elements.profileSelect.addEventListener('change', function(e) {
-        e.preventDefault(); // Prevent default form submission behavior
+        e.preventDefault();
         
-        if (this.value === 'create_new') {
+        const selectedValue = this.value;
+        
+        if (selectedValue === 'create_new') {
             // Show dialog to create a new profile
             elements.profileNameInput.value = '';
             elements.profileDialog.classList.add('show');
@@ -376,10 +393,25 @@ function initProfileManager(elements) {
             setTimeout(() => {
                 updateProfileSelect(elements.profileSelect, elements.lastSelectedProfile || '');
             }, 0);
-        } else if (this.value) {
+            
+        } else if (selectedValue === 'export_current') {
+            // Export current profile
+            exportCurrentProfile(elements);
+            setTimeout(() => {
+                updateProfileSelect(elements.profileSelect, elements.lastSelectedProfile || '');
+            }, 0);
+        } else if (selectedValue === 'import_profiles') {
+            // Trigger import
+            importProfiles();
+            setTimeout(() => {
+                updateProfileSelect(elements.profileSelect, elements.lastSelectedProfile || '');
+            }, 0);
+            
+        } else if (selectedValue) {
             // Load the selected profile
-            elements.lastSelectedProfile = this.value;
-            loadProfile(this.value, elements);
+            elements.lastSelectedProfile = selectedValue;
+            loadProfile(selectedValue, elements);
+            
         } else {
             // Reset to default settings if "Default Profile" is selected
             elements.lastSelectedProfile = '';
@@ -393,13 +425,13 @@ function initProfileManager(elements) {
         
         const selectedProfile = elements.profileSelect.value;
         
-        if (selectedProfile && selectedProfile !== 'create_new') {
+        if (selectedProfile && !['create_new', 'export_current', 'import_profiles'].includes(selectedProfile)) {
             // Save settings to existing profile
             if (saveProfile(selectedProfile, elements)) {
                 showNotification(elements.profileNotification, 'Profile updated!');
             }
         } else {
-            // If no profile is selected or it's the create_new option, inform the user
+            // If no profile is selected or it's a special option, inform the user
             alert('Please select a profile to save your settings to, or create a new profile.');
         }
     });
@@ -409,7 +441,7 @@ function initProfileManager(elements) {
         e.preventDefault();
         
         const selectedProfile = elements.profileSelect.value;
-        if (selectedProfile && selectedProfile !== 'create_new') {
+        if (selectedProfile && !['create_new', 'export_current', 'import_profiles'].includes(selectedProfile)) {
             if (confirm(`Are you sure you want to delete the profile "${selectedProfile}"?`)) {
                 if (deleteProfile(selectedProfile, elements)) {
                     showNotification(elements.profileNotification, 'Profile deleted!');
