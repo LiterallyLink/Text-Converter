@@ -33,7 +33,7 @@
             <h1>Text Converter</h1>
         </header>
         
-        <!-- New Profile Management Section -->
+        <!-- Profile Management Section -->
         <section class="profile-section">
             <div class="profile-container">
                 <label for="profileSelect">Profile</label>
@@ -42,6 +42,9 @@
                         <option value="">Default Profile</option>
                         <option value="create_new">Create a New Profile</option>
                         <!-- Profiles will be loaded here -->
+                        <option disabled>━━━━━━━━━━━━━━━━━━</option>
+                        <option value="export_current">Export Current Profile</option>
+                        <option value="import_profiles">Import Profile</option>
                     </select>
                     <button id="saveProfileButton" class="profile-button" aria-label="Save current settings to selected profile">
                         Save
@@ -50,6 +53,7 @@
                         Delete
                     </button>
                 </div>
+                <input type="file" id="importFileInput" class="file-input" accept=".json" aria-label="Select profile file to import" />
             </div>
         </section>
         
@@ -230,7 +234,43 @@
                     <h3>Cookie Usage</h3>
                     <p>Cookies are used solely to remember your preferences and profiles. If you clear your browser cookies or history, your saved profiles will be erased.</p>
                     
+                    <h3>Import/Export</h3>
+                    <p>You can export your profiles to JSON files for backup or sharing purposes. When importing profiles, you have control over how conflicts with existing profiles are handled.</p>
+                    
                     <p>By using this application, you acknowledge and agree to this privacy policy.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Import Profiles Modal -->
+        <div id="importModal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <h2>Import Profiles</h2>
+                <div class="import-preview">
+                    <h3>Profiles to Import:</h3>
+                    <div id="profileList" class="profile-list">
+                        <!-- Profile list will be populated here -->
+                    </div>
+                </div>
+                <div class="import-options">
+                    <h3>Import Options:</h3>
+                    <label>
+                        <input type="radio" name="importOption" value="merge" checked>
+                        Merge (Keep existing profiles, add new ones)
+                    </label>
+                    <label>
+                        <input type="radio" name="importOption" value="replace">
+                        Replace (Delete existing profiles, import all)
+                    </label>
+                    <label>
+                        <input type="radio" name="importOption" value="skip">
+                        Skip conflicts (Only import profiles with new names)
+                    </label>
+                </div>
+                <div style="text-align: right; margin-top: 20px;">
+                    <button id="cancelImportButton" class="import-export-button" style="margin-right: 10px;">Cancel</button>
+                    <button id="confirmImportButton" class="import-export-button">Import</button>
                 </div>
             </div>
         </div>
@@ -241,6 +281,7 @@
     <script src="js/textTransformations.js"></script>
     <script src="js/uiHandlers.js"></script>
     <script src="js/profileManager.js"></script>
+    <script src="js/importExport.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

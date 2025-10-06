@@ -27,6 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
         deleteProfileButton: document.getElementById('deleteProfileButton'),
     };
 
+    // Store elements globally for import/export access
+    window.textConverterElements = elements;
+
     const changelogModal = document.getElementById('changelogModal');
     const changelogButton = document.getElementById('changelogButton');
     const privacyPolicyModal = document.getElementById('privacyPolicyModal');
@@ -39,6 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize profile manager
     initProfileManager(elements);
+
+    // Initialize import/export functionality
+    initImportExport(elements);
 
     // Event Listeners for Text Transformations
     elements.inputText.addEventListener('input', () => updateOutput(elements));
