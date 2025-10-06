@@ -215,12 +215,12 @@ function updateProfileSelect(selectElement, selectedProfile = null) {
     
     const exportCurrentOption = document.createElement('option');
     exportCurrentOption.value = 'export_current';
-    exportCurrentOption.textContent = '📤 Export Current Profile';
+    exportCurrentOption.textContent = 'Export Current Profile';
     selectElement.appendChild(exportCurrentOption);
     
     const importOption = document.createElement('option');
     importOption.value = 'import_profiles';
-    importOption.textContent = '📥 Import Profiles';
+    importOption.textContent = 'Import Profiles';
     selectElement.appendChild(importOption);
     
     // Set selected profile if it exists
