@@ -447,6 +447,12 @@ select {
     z-index: 1000;
 }
 
+/* Hide settings and theme buttons when modal is open */
+body.modal-open .settings-button,
+body.modal-open .theme-switch-wrapper {
+    display: none !important;
+}
+
 .modal-content {
     position: relative;
     background-color: var(--container-bg-color);
@@ -546,11 +552,9 @@ select {
 
 /* Settings Button */
 .settings-button {
-    position: fixed !important;
-    top: 20px !important;
-    left: 20px !important;
-    right: auto !important;
-    bottom: auto !important;
+    position: absolute;
+    top: 20px;
+    left: 20px;
     width: 40px;
     height: 40px;
     padding: 8px;
@@ -562,8 +566,7 @@ select {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 9999 !important;
-    transform: none !important;
+    z-index: 100;
 }
 
 .settings-button:hover {
