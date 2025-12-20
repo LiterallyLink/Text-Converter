@@ -74,9 +74,21 @@ async function loadChangelog(changelogContent) {
     try {
         const response = await fetch('changelog.txt');
         const text = await response.text();
-        changelogContent.innerHTML = text.split('\n').map(line => `<p>${line}</p>`).join('');
+
+        // Clear existing content
+        changelogContent.textContent = '';
+
+        // Create paragraph elements safely (prevents XSS)
+        text.split('\n').forEach(line => {
+            const p = document.createElement('p');
+            p.textContent = line;
+            changelogContent.appendChild(p);
+        });
     } catch (error) {
-        changelogContent.innerHTML = '<p>Error loading changelog.</p>';
+        changelogContent.textContent = '';
+        const errorP = document.createElement('p');
+        errorP.textContent = 'Error loading changelog.';
+        changelogContent.appendChild(errorP);
     }
 }
 
