@@ -43,11 +43,25 @@
 
     .modal-content {
         width: 90%;
-        margin: 10px auto;
+        margin: 5vh auto;
         padding: 15px;
-        max-height: 95vh;
+        max-height: 80vh;
+        overflow-y: auto;
+        /* Account for mobile browser UI bars */
+        padding-bottom: calc(15px + env(safe-area-inset-bottom));
     }
-    
+
+    /* Ensure settings button is always accessible */
+    .settings-actions {
+        padding-bottom: 20px;
+        margin-top: 20px;
+    }
+
+    .settings-save-button {
+        width: 100%;
+        padding: 12px 24px;
+    }
+
     /* Profile section responsive styles */
     .profile-controls {
         flex-direction: column;
