@@ -82,12 +82,14 @@ async function loadChangelog(changelogContent) {
         const lines = text.split('\n');
         let currentVersion = null;
         let currentChanges = [];
+        let isFirstVersion = true;
 
         lines.forEach(line => {
             if (line.startsWith('Version ')) {
                 // Save previous version if it exists
                 if (currentVersion) {
-                    createChangelogSection(changelogContent, currentVersion, currentChanges);
+                    createChangelogSection(changelogContent, currentVersion, currentChanges, isFirstVersion);
+                    isFirstVersion = false;
                 }
                 // Start new version
                 currentVersion = line;
@@ -100,7 +102,7 @@ async function loadChangelog(changelogContent) {
 
         // Add the last version
         if (currentVersion) {
-            createChangelogSection(changelogContent, currentVersion, currentChanges);
+            createChangelogSection(changelogContent, currentVersion, currentChanges, isFirstVersion);
         }
     } catch (error) {
         changelogContent.textContent = '';
@@ -115,21 +117,48 @@ async function loadChangelog(changelogContent) {
  * @param {Element} container - Container element
  * @param {string} version - Version header text
  * @param {Array} changes - Array of change descriptions
+ * @param {boolean} expandByDefault - Whether to expand this section by default
  */
-function createChangelogSection(container, version, changes) {
+function createChangelogSection(container, version, changes, expandByDefault = false) {
     // Create version header (clickable)
     const header = document.createElement('div');
     header.className = 'changelog-version';
+    if (expandByDefault) {
+        header.classList.add('active');
+    }
     header.textContent = version;
 
     // Create changes container (collapsible)
     const changesDiv = document.createElement('div');
     changesDiv.className = 'changelog-changes';
+    if (expandByDefault) {
+        changesDiv.classList.add('show');
+    }
+
+    let currentCategory = null;
+    let categoryList = null;
 
     changes.forEach(change => {
-        const p = document.createElement('p');
-        p.textContent = change;
-        changesDiv.appendChild(p);
+        // Check if this is a category header (New, Fixed, Improved)
+        if (change === 'New' || change === 'Fixed' || change === 'Improved') {
+            // Create category header
+            currentCategory = document.createElement('h4');
+            currentCategory.className = 'changelog-category';
+            currentCategory.textContent = change;
+            changesDiv.appendChild(currentCategory);
+
+            // Create new list for this category
+            categoryList = document.createElement('ul');
+            categoryList.className = 'changelog-list';
+            changesDiv.appendChild(categoryList);
+        } else if (change.startsWith('• ')) {
+            // This is a bullet point
+            const li = document.createElement('li');
+            li.textContent = change.substring(2); // Remove the bullet
+            if (categoryList) {
+                categoryList.appendChild(li);
+            }
+        }
     });
 
     // Toggle functionality
