@@ -74,7 +74,8 @@
             <p id="textInstructions" class="sr-only">
                 Type text to see it styled with special first letter and comma options
             </p>
-            
+
+            <div id="advancedControls">
             <label for="firstLetterFont">Select First Letter Style</label>
             <select 
                 id="firstLetterFont" 
@@ -180,6 +181,7 @@
                         placeholder="Enter custom symbols..."
                     >
                 </div>
+            </div>
             </div>
         </section>
 
@@ -296,10 +298,21 @@
                     </div>
 
                     <div class="settings-section">
+                        <h3>Layout Preference</h3>
+                        <div class="checkbox-container">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="showControlsOnMain">
+                                <span class="checkmark"></span>
+                                Show controls on main page
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
                         <h3>Output Spacing</h3>
                         <div class="spacing-controls">
-                            <label for="outputSpacing">Spacing (newlines before and after text)</label>
-                            <select id="outputSpacing" aria-label="Number of newlines">
+                            <label for="settingsOutputSpacing">Spacing (newlines before and after text)</label>
+                            <select id="settingsOutputSpacing" aria-label="Number of newlines">
                                 <option value="0">None</option>
                                 <option value="1">1</option>
                                 <option value="2">2</option>
@@ -310,8 +323,94 @@
                         </div>
                     </div>
 
+                    <div id="settingsFormControls" class="settings-section">
+                        <h3>Text Transformations</h3>
+
+                        <label for="settingsFirstLetterFont">First Letter Style</label>
+                        <select id="settingsFirstLetterFont" aria-label="First letter font style">
+                            <option value="">Select First Letter Style</option>
+                            <option value="cursive">Cursive</option>
+                            <option value="gothic">Gothic</option>
+                            <option value="bold">Bold</option>
+                        </select>
+
+                        <label for="settingsCommaStyle">Comma Style</label>
+                        <select id="settingsCommaStyle" aria-label="Comma replacement style">
+                            <option value="">Select Comma Style</option>
+                            <option value="、">、</option>
+                            <option value="⸝⸝">⸝⸝</option>
+                            <option value="◞">◞</option>
+                            <option value="،،̲">،،̲</option>
+                            <option value="⸝">⸝</option>
+                        </select>
+
+                        <label for="settingsPunctuationStyle">Punctuation Style</label>
+                        <select id="settingsPunctuationStyle" aria-label="Punctuation replacement style">
+                            <option value="">Select Punctuation Style</option>
+                            <option value="⠀ׅ⎖,⠀ׅ𖤠">ׅ⎖ and⠀ׅ𖤠</option>
+                            <option value=".ᐟ,.ᐣ">.ᐟ and .ᐣ</option>
+                            <option value="₊ᐟ,₊ᐣ">₊ᐟ and ₊ᐣ</option>
+                        </select>
+
+                        <label for="settingsSpaceStyle">Space Style</label>
+                        <select id="settingsSpaceStyle" aria-label="Space replacement style">
+                            <option value="">Select Space Style</option>
+                            <option value="thin-space">Thin Space</option>
+                            <option value="hair-space">Hair Space</option>
+                            <option value="figure-space">Figure Space</option>
+                            <option value="punctuation-space">Punctuation Space</option>
+                            <option value="em-quad">Em Quad Space</option>
+                            <option value="en-quad">En Quad Space</option>
+                        </select>
+
+                        <label for="settingsUppercaseWordStyle">Uppercase Word Style</label>
+                        <select id="settingsUppercaseWordStyle" aria-label="Uppercase word style">
+                            <option value="">Select Uppercase Word Style</option>
+                            <option value="gothic">Gothic</option>
+                            <option value="bold">Bold</option>
+                            <option value="serif-bold">Serif Bold</option>
+                            <option value="italic">Italic</option>
+                            <option value="serif-bold-italic">Serif Bold Italic</option>
+                            <option value="bold-italic">Bold Italic</option>
+                            <option value="cryptic-italic">Cryptic Italic</option>
+                        </select>
+
+                        <div class="symbol-section-settings">
+                            <label class="symbol-label">
+                                Symbol Style
+                                <span class="experimental-tag" title="This feature is experimental and may be changed in the future.">Experimental</span>
+                            </label>
+                            <div class="symbol-buttons">
+                                <button id="settingsSymbolButton1" class="symbol-button active" type="button">None</button>
+                                <button id="settingsSymbolButton2" class="symbol-button" type="button">Random</button>
+                                <button id="settingsSymbolButton3" class="symbol-button" type="button">Custom</button>
+                            </div>
+                            <div id="settingsSymbolControls" style="display: none;">
+                                <div class="slider-container">
+                                    <label for="settingsSymbolFrequency">Symbol Frequency</label>
+                                    <div class="slider-wrapper">
+                                        <input type="range" id="settingsSymbolFrequency" min="0" max="100" value="50">
+                                        <div class="slider-labels">
+                                            <span>Minimal</span>
+                                            <span>Moderate</span>
+                                            <span>Frequent</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="checkbox-container">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="settingsAllowRepeatSymbols" checked>
+                                        <span class="checkmark"></span>
+                                        Allow Repeat Symbols
+                                    </label>
+                                </div>
+                                <input type="text" id="settingsSymbolInput" placeholder="Enter custom symbols...">
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="settings-actions">
-                        <button id="saveSettingsButton" class="settings-save-button">Save Settings</button>
+                        <button id="saveSettingsButton" class="settings-save-button">Apply Settings</button>
                     </div>
                 </div>
             </div>
