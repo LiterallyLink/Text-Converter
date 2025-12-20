@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Converter - Test Suite</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-suite {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-case {
+            padding: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #ccc;
+            background: #f9f9f9;
+        }
+        .test-case.pass {
+            border-left-color: #4caf50;
+            background: #f1f8f4;
+        }
+        .test-case.fail {
+            border-left-color: #f44336;
+            background: #fef1f0;
+        }
+        .test-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .test-result {
+            font-family: monospace;
+            font-size: 12px;
+            color: #666;
+        }
+        .summary {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .summary.all-pass {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .summary.has-fail {
+            background: #ffebee;
+            color: #c62828;
+        }
+        h1 {
+            color: #333;
+        }
+        h2 {
+            color: #555;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Text Converter - Test Suite</h1>
+    <div id="summary" class="summary">Running tests...</div>
+    <div id="test-results"></div>
+
+    <!-- Load the actual application files -->
+    <script src="js/fontMappings.js"></script>
+    <script src="js/textTransformations.js"></script>
+
+    <script>
+        // Test utilities
+        const tests = [];
+        let passed = 0;
+        let failed = 0;
+
+        function assert(condition, testName, expected, actual) {
+            const result = {
+                name: testName,
+                passed: condition,
+                expected: expected,
+                actual: actual
+            };
+            tests.push(result);
+            if (condition) {
+                passed++;
+            } else {
+                failed++;
+            }
+            return condition;
+        }
+
+        function assertEquals(actual, expected, testName) {
+            const condition = actual === expected;
+            assert(condition, testName, expected, actual);
+        }
+
+        function assertNotEquals(actual, notExpected, testName) {
+            const condition = actual !== notExpected;
+            assert(condition, testName, `not ${notExpected}`, actual);
+        }
+
+        function runTests() {
+            // Create mock elements object for testing
+            const mockElements = {
+                inputText: { value: 'test input' },
+                firstLetterFont: { value: '' },
+                commaStyle: { value: '' },
+                punctuationStyle: { value: '' },
+                spaceStyle: { value: '' },
+                uppercaseWordStyle: { value: '' },
+                symbolButtons: [{ classList: { contains: () => true, add: () => {}, remove: () => {} }, id: 'symbolButton1' }],
+                symbolFrequencySlider: { value: 50 },
+                allowRepeatSymbols: { checked: true },
+                symbolInput: { value: '' },
+                output: { innerHTML: '' },
+                outputSpacing: { value: '0' }
+            };
+
+            // Test Suite 1: First Letter Transformations
+            console.log('Testing First Letter Transformations...');
+
+            let result = replaceFirstLetter('hello', 'cursive');
+            assertNotEquals(result, 'hello', 'First letter cursive transformation');
+
+            result = replaceFirstLetter('world', 'gothic');
+            assertNotEquals(result, 'world', 'First letter gothic transformation');
+
+            result = replaceFirstLetter('test', 'bold');
+            assertNotEquals(result, 'test', 'First letter bold transformation');
+
+            result = replaceFirstLetter('hello', '');
+            assertEquals(result, 'hello', 'First letter no transformation');
+
+            // Test Suite 2: Uppercase Word Transformations
+            console.log('Testing Uppercase Word Transformations...');
+
+            result = replaceUppercaseWords('HELLO world', 'gothic');
+            assertNotEquals(result, 'HELLO world', 'Uppercase word gothic transformation');
+
+            result = replaceUppercaseWords('test WORLD', 'bold');
+            assertNotEquals(result, 'test WORLD', 'Uppercase word bold transformation');
+
+            result = replaceUppercaseWords('HELLO world', '');
+            assertEquals(result, 'HELLO world', 'Uppercase word no transformation');
+
+            // Test Suite 3: Comma Replacements
+            console.log('Testing Comma Replacements...');
+
+            result = replaceCommas('hello, world', '、');
+            assertEquals(result, 'hello、 world', 'Comma replacement with 、');
+
+            result = replaceCommas('a,b,c', '⸝⸝');
+            assertEquals(result, 'a⸝⸝b⸝⸝c', 'Comma replacement with ⸝⸝');
+
+            result = replaceCommas('hello, world', '');
+            assertEquals(result, 'hello, world', 'Comma no replacement');
+
+            // Test Suite 4: Punctuation Replacements
+            console.log('Testing Punctuation Replacements...');
+
+            result = replacePunctuation('hello!', '⠀ׅ⎖,⠀ׅ𖤠');
+            assertEquals(result, 'hello⠀ׅ⎖', 'Exclamation mark replacement');
+
+            result = replacePunctuation('what?', '⠀ׅ⎖,⠀ׅ𖤠');
+            assertEquals(result, 'what⠀ׅ𖤠', 'Question mark replacement');
+
+            result = replacePunctuation('hello!?', '.ᐟ,.ᐣ');
+            assertEquals(result, 'hello.ᐟ.ᐣ', 'Multiple punctuation replacement');
+
+            // Test Suite 5: Space Replacements
+            console.log('Testing Space Replacements...');
+
+            result = replaceSpaces('hello world', 'thin-space');
+            assertNotEquals(result, 'hello world', 'Thin space replacement');
+
+            result = replaceSpaces('hello world', 'hair-space');
+            assertNotEquals(result, 'hello world', 'Hair space replacement');
+
+            result = replaceSpaces('hello world', '');
+            assertEquals(result, 'hello world', 'Space no replacement');
+
+            // Test Suite 6: Spacing Function
+            console.log('Testing Spacing Function...');
+
+            mockElements.outputSpacing.value = '0';
+            result = applySpacing('test', mockElements);
+            assertEquals(result, 'test', 'No spacing applied');
+
+            mockElements.outputSpacing.value = '1';
+            result = applySpacing('test', mockElements);
+            assertNotEquals(result, 'test', 'Spacing applied (1 line)');
+            assert(result.includes('\n'), 'Spacing includes newlines', true, result.includes('\n'));
+
+            mockElements.outputSpacing.value = '2';
+            result = applySpacing('test', mockElements);
+            assertNotEquals(result, 'test', 'Spacing applied (2 lines)');
+
+            // Test Suite 7: Symbol Addition
+            console.log('Testing Symbol Addition...');
+
+            // Test with symbols disabled
+            result = addSymbols('hello world', mockElements);
+            assertEquals(result, 'hello world', 'Symbols disabled (button 1)');
+
+            // Test Suite 8: Update Output Integration
+            console.log('Testing Update Output Integration...');
+
+            mockElements.inputText.value = 'test';
+            updateOutput(mockElements);
+            assertEquals(mockElements.output.innerHTML, 'test', 'Update output with no transformations');
+
+            mockElements.inputText.value = '';
+            updateOutput(mockElements);
+            assertEquals(mockElements.output.innerHTML, '', 'Update output with empty input');
+
+            // Test Suite 9: Font Mappings Existence
+            console.log('Testing Font Mappings Existence...');
+
+            assert(typeof FIRST_LETTER_FONTS !== 'undefined', 'FIRST_LETTER_FONTS defined', 'defined', typeof FIRST_LETTER_FONTS);
+            assert(typeof UPPERCASE_WORD_STYLES !== 'undefined', 'UPPERCASE_WORD_STYLES defined', 'defined', typeof UPPERCASE_WORD_STYLES);
+            assert(typeof SPACE_STYLES !== 'undefined', 'SPACE_STYLES defined', 'defined', typeof SPACE_STYLES);
+            assert(typeof RANDOM_SYMBOLS !== 'undefined', 'RANDOM_SYMBOLS defined', 'defined', typeof RANDOM_SYMBOLS);
+
+            // Test Suite 10: Font Mappings Content
+            console.log('Testing Font Mappings Content...');
+
+            assert(FIRST_LETTER_FONTS.cursive !== undefined, 'Cursive font mapping exists', 'exists', 'exists');
+            assert(FIRST_LETTER_FONTS.gothic !== undefined, 'Gothic font mapping exists', 'exists', 'exists');
+            assert(FIRST_LETTER_FONTS.bold !== undefined, 'Bold font mapping exists', 'exists', 'exists');
+
+            assert(UPPERCASE_WORD_STYLES.gothic !== undefined, 'Gothic uppercase mapping exists', 'exists', 'exists');
+            assert(UPPERCASE_WORD_STYLES.bold !== undefined, 'Bold uppercase mapping exists', 'exists', 'exists');
+
+            assert(SPACE_STYLES['thin-space'] !== undefined, 'Thin space mapping exists', 'exists', 'exists');
+            assert(RANDOM_SYMBOLS.length > 0, 'Random symbols array has items', '> 0', RANDOM_SYMBOLS.length);
+
+            // Display results
+            displayResults();
+        }
+
+        function displayResults() {
+            const resultsContainer = document.getElementById('test-results');
+            const summaryContainer = document.getElementById('summary');
+
+            // Update summary
+            const total = passed + failed;
+            summaryContainer.innerHTML = `
+                <strong>Test Results:</strong> ${passed}/${total} passed
+                ${failed > 0 ? `<br><span style="color: #c62828;">${failed} failed</span>` : ''}
+            `;
+            summaryContainer.className = failed === 0 ? 'summary all-pass' : 'summary has-fail';
+
+            // Group tests by category
+            const categories = {};
+            tests.forEach(test => {
+                const category = test.name.split(' - ')[0] || 'Other';
+                if (!categories[category]) {
+                    categories[category] = [];
+                }
+                categories[category].push(test);
+            });
+
+            // Display tests by category
+            let html = '';
+            for (const category in categories) {
+                const categoryTests = categories[category];
+                const categoryPassed = categoryTests.filter(t => t.passed).length;
+                const categoryTotal = categoryTests.length;
+
+                html += `
+                    <div class="test-suite">
+                        <h2>${category} (${categoryPassed}/${categoryTotal})</h2>
+                `;
+
+                categoryTests.forEach(test => {
+                    html += `
+                        <div class="test-case ${test.passed ? 'pass' : 'fail'}">
+                            <div class="test-name">
+                                ${test.passed ? '✓' : '✗'} ${test.name}
+                            </div>
+                            ${!test.passed ? `
+                                <div class="test-result">
+                                    Expected: ${JSON.stringify(test.expected)}<br>
+                                    Actual: ${JSON.stringify(test.actual)}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                });
+
+                html += '</div>';
+            }
+
+            resultsContainer.innerHTML = html;
+        }
+
+        // Run tests when page loads
+        window.addEventListener('load', runTests);
+    </script>
+</body>
+</html>
