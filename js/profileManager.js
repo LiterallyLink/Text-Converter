@@ -47,8 +47,7 @@ function getCurrentSettings(elements) {
     let symbolMode = activeSymbolButton ? activeSymbolButton.id : 'symbolButton1';
 
     // Get spacing settings (default to 0 if not set)
-    const topSpacing = elements.topSpacing ? parseInt(elements.topSpacing.value) || 0 : 0;
-    const bottomSpacing = elements.bottomSpacing ? parseInt(elements.bottomSpacing.value) || 0 : 0;
+    const spacing = elements.outputSpacing ? parseInt(elements.outputSpacing.value) || 0 : 0;
 
     return {
         firstLetterFont: elements.firstLetterFont.value,
@@ -60,8 +59,7 @@ function getCurrentSettings(elements) {
         symbolFrequency: elements.symbolFrequencySlider.value,
         allowRepeatSymbols: elements.allowRepeatSymbols.checked,
         customSymbols: elements.symbolInput.value,
-        topSpacing: topSpacing,
-        bottomSpacing: bottomSpacing
+        spacing: spacing
     };
 }
 
@@ -95,11 +93,8 @@ function applySettings(settings, elements) {
     if (settings.customSymbols) elements.symbolInput.value = settings.customSymbols;
 
     // Apply spacing settings
-    if (elements.topSpacing && settings.topSpacing !== undefined) {
-        elements.topSpacing.value = settings.topSpacing;
-    }
-    if (elements.bottomSpacing && settings.bottomSpacing !== undefined) {
-        elements.bottomSpacing.value = settings.bottomSpacing;
+    if (elements.outputSpacing && settings.spacing !== undefined) {
+        elements.outputSpacing.value = settings.spacing;
     }
 
     // Update output with new settings

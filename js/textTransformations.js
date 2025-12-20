@@ -197,21 +197,24 @@ function updateOutput(elements) {
  * @returns {string} Text with spacing applied
  */
 function applySpacing(text, elements) {
-    // Get spacing values from elements (default to 0)
-    const topSpacing = elements.topSpacing ? parseInt(elements.topSpacing.value) || 0 : 0;
-    const bottomSpacing = elements.bottomSpacing ? parseInt(elements.bottomSpacing.value) || 0 : 0;
+    // Get spacing value from elements (default to 0)
+    const spacing = elements.outputSpacing ? parseInt(elements.outputSpacing.value) || 0 : 0;
+
+    if (spacing === 0) {
+        return text;
+    }
 
     // Add invisible Unicode character (Hangul Filler) for spacing
     const invisibleSpace = 'ᅠ';
 
     // Add top spacing
     let spacedText = text;
-    for (let i = 0; i < topSpacing; i++) {
+    for (let i = 0; i < spacing; i++) {
         spacedText = invisibleSpace + '\n' + spacedText;
     }
 
     // Add bottom spacing
-    for (let i = 0; i < bottomSpacing; i++) {
+    for (let i = 0; i < spacing; i++) {
         spacedText = spacedText + '\n' + invisibleSpace;
     }
 

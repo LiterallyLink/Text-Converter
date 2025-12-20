@@ -25,8 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         profileSelect: document.getElementById('profileSelect'),
         saveProfileButton: document.getElementById('saveProfileButton'),
         deleteProfileButton: document.getElementById('deleteProfileButton'),
-        topSpacing: document.getElementById('topSpacing'),
-        bottomSpacing: document.getElementById('bottomSpacing'),
+        outputSpacing: document.getElementById('outputSpacing'),
     };
 
     // Store elements globally for import/export access

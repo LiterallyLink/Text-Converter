@@ -111,6 +111,7 @@ select {
     border-radius: 5px;
     min-height: 50px;
     border: 1px solid var(--output-border);
+    white-space: pre-wrap;
 }
 
 /* Copy Button */
