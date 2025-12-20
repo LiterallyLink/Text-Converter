@@ -32,30 +32,24 @@
     }
     
     .theme-switch-wrapper {
-        position: fixed !important;
-        right: 20px !important;
-        top: 20px !important;
-        left: auto !important;
-        bottom: auto !important;
-        z-index: 9999 !important;
-        transform: none !important;
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        z-index: 100;
     }
 
     .settings-button {
-        position: fixed !important;
-        left: 20px !important;
-        top: 20px !important;
-        right: auto !important;
-        bottom: auto !important;
-        z-index: 9999 !important;
-        transform: none !important;
+        position: absolute;
+        left: 20px;
+        top: 20px;
+        z-index: 100;
     }
 
     .modal-content {
         width: 90%;
-        margin: 5vh auto;
+        margin: 0 auto;
         padding: 15px;
-        max-height: 80vh;
+        max-height: 90vh;
         overflow-y: auto;
         /* Account for mobile browser UI bars */
         padding-bottom: calc(15px + env(safe-area-inset-bottom));

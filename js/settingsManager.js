@@ -51,6 +51,9 @@ function openSettingsModal() {
     loadSettingsIntoModal();
 
     modal.style.display = 'block';
+
+    // Add class to body to hide buttons
+    document.body.classList.add('modal-open');
 }
 
 /**
@@ -59,6 +62,9 @@ function openSettingsModal() {
 function closeSettingsModal() {
     const modal = document.getElementById('settingsModal');
     modal.style.display = 'none';
+
+    // Remove class from body to show buttons again
+    document.body.classList.remove('modal-open');
 }
 
 /**
