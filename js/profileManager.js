@@ -69,35 +69,70 @@ function getCurrentSettings(elements) {
  * @param {Object} elements - DOM elements object
  */
 function applySettings(settings, elements) {
-    if (!settings) return;
-
-    // Apply basic select values
-    if (settings.firstLetterFont) elements.firstLetterFont.value = settings.firstLetterFont;
-    if (settings.commaStyle) elements.commaStyle.value = settings.commaStyle;
-    if (settings.punctuationStyle) elements.punctuationStyle.value = settings.punctuationStyle;
-    if (settings.spaceStyle) elements.spaceStyle.value = settings.spaceStyle;
-    if (settings.uppercaseWordStyle) elements.uppercaseWordStyle.value = settings.uppercaseWordStyle;
-
-    // Apply symbol settings
-    if (settings.symbolMode) {
-        elements.symbolButtons.forEach(btn => btn.classList.remove('active'));
-        const activeButton = document.getElementById(settings.symbolMode);
-        if (activeButton) {
-            activeButton.classList.add('active');
-            updateSymbolControls(settings.symbolMode, elements);
-        }
+    if (!settings) {
+        // If no settings, reset to defaults
+        resetToDefaults(elements);
+        return;
     }
 
-    if (settings.symbolFrequency) elements.symbolFrequencySlider.value = settings.symbolFrequency;
-    if (settings.allowRepeatSymbols !== undefined) elements.allowRepeatSymbols.checked = settings.allowRepeatSymbols;
-    if (settings.customSymbols) elements.symbolInput.value = settings.customSymbols;
+    // Apply basic select values (use empty string as default)
+    elements.firstLetterFont.value = settings.firstLetterFont || '';
+    elements.commaStyle.value = settings.commaStyle || '';
+    elements.punctuationStyle.value = settings.punctuationStyle || '';
+    elements.spaceStyle.value = settings.spaceStyle || '';
+    elements.uppercaseWordStyle.value = settings.uppercaseWordStyle || '';
 
-    // Apply spacing settings
-    if (elements.outputSpacing && settings.spacing !== undefined) {
-        elements.outputSpacing.value = settings.spacing;
+    // Apply symbol settings (default to None/symbolButton1)
+    const symbolMode = settings.symbolMode || 'symbolButton1';
+    elements.symbolButtons.forEach(btn => btn.classList.remove('active'));
+    const activeButton = document.getElementById(symbolMode);
+    if (activeButton) {
+        activeButton.classList.add('active');
+        updateSymbolControls(symbolMode, elements);
+    }
+
+    elements.symbolFrequencySlider.value = settings.symbolFrequency || '50';
+    elements.allowRepeatSymbols.checked = settings.allowRepeatSymbols !== undefined ? settings.allowRepeatSymbols : true;
+    elements.symbolInput.value = settings.customSymbols || '';
+
+    // Apply spacing settings (default to 0)
+    if (elements.outputSpacing) {
+        elements.outputSpacing.value = settings.spacing !== undefined ? settings.spacing : 0;
     }
 
     // Update output with new settings
+    updateOutput(elements);
+}
+
+/**
+ * Resets all form elements to default values
+ * @param {Object} elements - DOM elements object
+ */
+function resetToDefaults(elements) {
+    // Reset all selects to empty string (first option)
+    elements.firstLetterFont.value = '';
+    elements.commaStyle.value = '';
+    elements.punctuationStyle.value = '';
+    elements.spaceStyle.value = '';
+    elements.uppercaseWordStyle.value = '';
+
+    // Reset symbol settings
+    elements.symbolButtons.forEach(btn => btn.classList.remove('active'));
+    const defaultButton = document.getElementById('symbolButton1');
+    if (defaultButton) {
+        defaultButton.classList.add('active');
+        updateSymbolControls('symbolButton1', elements);
+    }
+
+    elements.symbolFrequencySlider.value = '50';
+    elements.allowRepeatSymbols.checked = true;
+    elements.symbolInput.value = '';
+
+    // Reset spacing
+    if (elements.outputSpacing) {
+        elements.outputSpacing.value = 0;
+    }
+
     updateOutput(elements);
 }
 
