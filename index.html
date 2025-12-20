@@ -28,6 +28,13 @@
             </span>
         </label>
     </div>
+    <button class="settings-button" id="settingsButton" aria-label="Open settings">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M12 1v6m0 6v6m-9-9h6m6 0h6"></path>
+            <path d="M4.22 4.22l4.24 4.24m7.08 0l4.24-4.24M4.22 19.78l4.24-4.24m7.08 0l4.24 4.24"></path>
+        </svg>
+    </button>
     <main class="container">
         <header>
             <h1>Text Converter</h1>
@@ -274,6 +281,41 @@
                 </div>
             </div>
         </div>
+
+        <!-- Settings Modal -->
+        <div id="settingsModal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <h2>Profile Settings</h2>
+                <div class="settings-container">
+                    <div class="settings-section">
+                        <label for="settingsProfileSelect">Select Profile</label>
+                        <select id="settingsProfileSelect" aria-label="Select profile to configure">
+                            <option value="">Default Profile</option>
+                            <!-- Profiles will be loaded here -->
+                        </select>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Output Spacing</h3>
+                        <div class="spacing-controls">
+                            <div class="spacing-control-group">
+                                <label for="topSpacing">Top Spacing (newlines before text)</label>
+                                <input type="number" id="topSpacing" min="0" max="10" value="0" aria-label="Number of newlines before text">
+                            </div>
+                            <div class="spacing-control-group">
+                                <label for="bottomSpacing">Bottom Spacing (newlines after text)</label>
+                                <input type="number" id="bottomSpacing" min="0" max="10" value="0" aria-label="Number of newlines after text">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-actions">
+                        <button id="saveSettingsButton" class="settings-save-button">Save Settings</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </footer>
 
     <!-- JavaScript Files -->
@@ -282,6 +324,7 @@
     <script src="js/uiHandlers.js"></script>
     <script src="js/profileManager.js"></script>
     <script src="js/importExport.js"></script>
+    <script src="js/settingsManager.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

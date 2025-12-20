@@ -25,6 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
         profileSelect: document.getElementById('profileSelect'),
         saveProfileButton: document.getElementById('saveProfileButton'),
         deleteProfileButton: document.getElementById('deleteProfileButton'),
+        topSpacing: document.getElementById('topSpacing'),
+        bottomSpacing: document.getElementById('bottomSpacing'),
     };
 
     // Store elements globally for import/export access
@@ -34,6 +36,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const changelogButton = document.getElementById('changelogButton');
     const privacyPolicyModal = document.getElementById('privacyPolicyModal');
     const privacyPolicyButton = document.getElementById('privacyPolicyButton');
+    const settingsModal = document.getElementById('settingsModal');
+    const settingsButton = document.getElementById('settingsButton');
+    const settingsProfileSelect = document.getElementById('settingsProfileSelect');
+    const saveSettingsButton = document.getElementById('saveSettingsButton');
     const closeButtons = document.querySelectorAll('.close-button');
     const changelogContent = document.getElementById('changelogContent');
 
@@ -83,14 +89,27 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         privacyPolicyModal.style.display = 'block';
     });
-    
+
+    // Settings Modal Events
+    settingsButton.addEventListener('click', () => {
+        openSettingsModal();
+    });
+
+    settingsProfileSelect.addEventListener('change', (e) => {
+        loadSettingsForProfile(e.target.value);
+    });
+
+    saveSettingsButton.addEventListener('click', () => {
+        saveSettingsForProfile();
+    });
+
     // Close buttons for all modals
     closeButtons.forEach(button => {
         button.addEventListener('click', function() {
             this.closest('.modal').style.display = 'none';
         });
     });
-    
+
     // Close modals when clicking outside
     window.addEventListener('click', (e) => {
         if (e.target === changelogModal) {
@@ -98,6 +117,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (e.target === privacyPolicyModal) {
             privacyPolicyModal.style.display = 'none';
+        }
+        if (e.target === settingsModal) {
+            settingsModal.style.display = 'none';
         }
     });
 });

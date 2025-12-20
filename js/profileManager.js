@@ -45,7 +45,11 @@ function saveProfiles(profiles) {
 function getCurrentSettings(elements) {
     let activeSymbolButton = Array.from(elements.symbolButtons).find(btn => btn.classList.contains('active'));
     let symbolMode = activeSymbolButton ? activeSymbolButton.id : 'symbolButton1';
-    
+
+    // Get spacing settings (default to 0 if not set)
+    const topSpacing = elements.topSpacing ? parseInt(elements.topSpacing.value) || 0 : 0;
+    const bottomSpacing = elements.bottomSpacing ? parseInt(elements.bottomSpacing.value) || 0 : 0;
+
     return {
         firstLetterFont: elements.firstLetterFont.value,
         commaStyle: elements.commaStyle.value,
@@ -55,7 +59,9 @@ function getCurrentSettings(elements) {
         symbolMode: symbolMode,
         symbolFrequency: elements.symbolFrequencySlider.value,
         allowRepeatSymbols: elements.allowRepeatSymbols.checked,
-        customSymbols: elements.symbolInput.value
+        customSymbols: elements.symbolInput.value,
+        topSpacing: topSpacing,
+        bottomSpacing: bottomSpacing
     };
 }
 
@@ -66,14 +72,14 @@ function getCurrentSettings(elements) {
  */
 function applySettings(settings, elements) {
     if (!settings) return;
-    
+
     // Apply basic select values
     if (settings.firstLetterFont) elements.firstLetterFont.value = settings.firstLetterFont;
     if (settings.commaStyle) elements.commaStyle.value = settings.commaStyle;
     if (settings.punctuationStyle) elements.punctuationStyle.value = settings.punctuationStyle;
     if (settings.spaceStyle) elements.spaceStyle.value = settings.spaceStyle;
     if (settings.uppercaseWordStyle) elements.uppercaseWordStyle.value = settings.uppercaseWordStyle;
-    
+
     // Apply symbol settings
     if (settings.symbolMode) {
         elements.symbolButtons.forEach(btn => btn.classList.remove('active'));
@@ -83,11 +89,19 @@ function applySettings(settings, elements) {
             updateSymbolControls(settings.symbolMode, elements);
         }
     }
-    
+
     if (settings.symbolFrequency) elements.symbolFrequencySlider.value = settings.symbolFrequency;
     if (settings.allowRepeatSymbols !== undefined) elements.allowRepeatSymbols.checked = settings.allowRepeatSymbols;
     if (settings.customSymbols) elements.symbolInput.value = settings.customSymbols;
-    
+
+    // Apply spacing settings
+    if (elements.topSpacing && settings.topSpacing !== undefined) {
+        elements.topSpacing.value = settings.topSpacing;
+    }
+    if (elements.bottomSpacing && settings.bottomSpacing !== undefined) {
+        elements.bottomSpacing.value = settings.bottomSpacing;
+    }
+
     // Update output with new settings
     updateOutput(elements);
 }

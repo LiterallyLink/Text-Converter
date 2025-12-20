@@ -161,7 +161,7 @@ function updateOutput(elements) {
 
     // Apply text transformations in the correct order
     processedText = replaceFirstLetter(
-        processedText, 
+        processedText,
         elements.firstLetterFont.value
     );
     processedText = replaceUppercaseWords(
@@ -169,7 +169,7 @@ function updateOutput(elements) {
         elements.uppercaseWordStyle.value
     );
     processedText = replaceCommas(
-        processedText, 
+        processedText,
         elements.commaStyle.value
     );
     processedText = replacePunctuation(
@@ -184,5 +184,36 @@ function updateOutput(elements) {
         elements.spaceStyle.value
     );
 
+    // Apply spacing settings (newlines before and after)
+    processedText = applySpacing(processedText, elements);
+
     elements.output.innerHTML = processedText;
+}
+
+/**
+ * Applies top and bottom spacing (newlines) to the text
+ * @param {string} text - Input text
+ * @param {Object} elements - DOM elements object
+ * @returns {string} Text with spacing applied
+ */
+function applySpacing(text, elements) {
+    // Get spacing values from elements (default to 0)
+    const topSpacing = elements.topSpacing ? parseInt(elements.topSpacing.value) || 0 : 0;
+    const bottomSpacing = elements.bottomSpacing ? parseInt(elements.bottomSpacing.value) || 0 : 0;
+
+    // Add invisible Unicode character (Hangul Filler) for spacing
+    const invisibleSpace = 'ᅠ';
+
+    // Add top spacing
+    let spacedText = text;
+    for (let i = 0; i < topSpacing; i++) {
+        spacedText = invisibleSpace + '\n' + spacedText;
+    }
+
+    // Add bottom spacing
+    for (let i = 0; i < bottomSpacing; i++) {
+        spacedText = spacedText + '\n' + invisibleSpace;
+    }
+
+    return spacedText;
 }
