@@ -65,15 +65,18 @@
         
         <section>
             <label for="inputText" class="sr-only">Enter your text</label>
-            <input 
-                type="text" 
-                id="inputText" 
-                placeholder="Enter your text here..." 
+            <input
+                type="text"
+                id="inputText"
+                placeholder="Enter your text here..."
                 aria-describedby="textInstructions"
             >
             <p id="textInstructions" class="sr-only">
                 Type text to see it styled with special first letter and comma options
             </p>
+
+            <!-- Hidden input to store output spacing value -->
+            <input type="hidden" id="outputSpacing" value="0">
 
             <div id="advancedControls">
             <label for="firstLetterFont">Select First Letter Style</label>
