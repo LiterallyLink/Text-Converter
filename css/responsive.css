@@ -32,13 +32,23 @@
     }
     
     .theme-switch-wrapper {
-        right: 20px;
-        top: 20px;
+        position: fixed !important;
+        right: 20px !important;
+        top: 20px !important;
+        left: auto !important;
+        bottom: auto !important;
+        z-index: 9999 !important;
+        transform: none !important;
     }
 
     .settings-button {
-        left: 20px;
-        top: 20px;
+        position: fixed !important;
+        left: 20px !important;
+        top: 20px !important;
+        right: auto !important;
+        bottom: auto !important;
+        z-index: 9999 !important;
+        transform: none !important;
     }
 
     .modal-content {
