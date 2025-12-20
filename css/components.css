@@ -453,6 +453,11 @@ body.modal-open .theme-switch-wrapper {
     display: none !important;
 }
 
+/* Prevent background scrolling when modal is open */
+body.modal-open {
+    overflow: hidden;
+}
+
 .modal-content {
     position: relative;
     background-color: var(--container-bg-color);
@@ -552,7 +557,7 @@ body.modal-open .theme-switch-wrapper {
 
 /* Settings Button */
 .settings-button {
-    position: absolute;
+    position: fixed;
     top: 20px;
     left: 20px;
     width: 40px;
