@@ -700,12 +700,39 @@ select {
 }
 
 .changelog-changes.show {
-    max-height: 500px;
-    padding: 10px 15px;
+    max-height: 800px;
+    padding: 15px 15px 10px 15px;
 }
 
-.changelog-changes p {
-    margin: 5px 0;
+.changelog-category {
     color: var(--text-color);
+    font-size: 0.95em;
+    font-weight: 600;
+    margin: 12px 0 8px 0;
+    opacity: 0.8;
+}
+
+.changelog-category:first-child {
+    margin-top: 0;
+}
+
+.changelog-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 0 0 8px 0;
+}
+
+.changelog-list li {
+    color: var(--text-color);
+    padding: 4px 0 4px 20px;
+    position: relative;
     line-height: 1.5;
+}
+
+.changelog-list li::before {
+    content: '•';
+    position: absolute;
+    left: 8px;
+    color: var(--accent-color);
+    font-weight: bold;
 }
