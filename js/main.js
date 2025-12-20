@@ -51,6 +51,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize import/export functionality
     initImportExport(elements);
 
+    // Initialize settings modal
+    initSettingsModal();
+
     // Event Listeners for Text Transformations
     elements.inputText.addEventListener('input', () => updateOutput(elements));
     elements.firstLetterFont.addEventListener('change', () => updateOutput(elements));
@@ -94,12 +97,8 @@ document.addEventListener('DOMContentLoaded', () => {
         openSettingsModal();
     });
 
-    settingsProfileSelect.addEventListener('change', (e) => {
-        loadSettingsForProfile(e.target.value);
-    });
-
     saveSettingsButton.addEventListener('click', () => {
-        saveSettingsForProfile();
+        applySettingsFromModal();
     });
 
     // Close buttons for all modals
