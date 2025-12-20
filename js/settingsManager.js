@@ -51,13 +51,11 @@ function updateSettingsProfileSelect(select) {
  * @param {string} profileName - Name of the profile to load
  */
 function loadSettingsForProfile(profileName) {
-    const topSpacingInput = document.getElementById('topSpacing');
-    const bottomSpacingInput = document.getElementById('bottomSpacing');
+    const spacingSelect = document.getElementById('outputSpacing');
 
     if (!profileName) {
         // Default profile - reset to 0
-        topSpacingInput.value = 0;
-        bottomSpacingInput.value = 0;
+        spacingSelect.value = 0;
         return;
     }
 
@@ -65,8 +63,7 @@ function loadSettingsForProfile(profileName) {
     const profile = profiles[profileName];
 
     if (profile) {
-        topSpacingInput.value = profile.topSpacing || 0;
-        bottomSpacingInput.value = profile.bottomSpacing || 0;
+        spacingSelect.value = profile.spacing || 0;
     }
 }
 
@@ -76,15 +73,13 @@ function loadSettingsForProfile(profileName) {
 function saveSettingsForProfile() {
     const profileSelect = document.getElementById('settingsProfileSelect');
     const profileName = profileSelect.value;
-    const topSpacing = parseInt(document.getElementById('topSpacing').value) || 0;
-    const bottomSpacing = parseInt(document.getElementById('bottomSpacing').value) || 0;
+    const spacing = parseInt(document.getElementById('outputSpacing').value) || 0;
 
     if (!profileName) {
-        // For default profile, just update the current page's spacing inputs
+        // For default profile, just update the current page's spacing input
         const elements = window.textConverterElements;
-        if (elements && elements.topSpacing && elements.bottomSpacing) {
-            elements.topSpacing.value = topSpacing;
-            elements.bottomSpacing.value = bottomSpacing;
+        if (elements && elements.outputSpacing) {
+            elements.outputSpacing.value = spacing;
             updateOutput(elements);
         }
 
@@ -98,8 +93,7 @@ function saveSettingsForProfile() {
 
     if (profile) {
         // Update the profile with new spacing settings
-        profile.topSpacing = topSpacing;
-        profile.bottomSpacing = bottomSpacing;
+        profile.spacing = spacing;
 
         // Save profiles back to cookies
         if (saveProfiles(profiles)) {
