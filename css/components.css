@@ -378,6 +378,7 @@ select {
     border: 2px solid var(--accent-color);
     border-radius: 4px;
     transition: all 0.2s ease;
+    flex-shrink: 0;
 }
 
 /* Checkmark/indicator */
@@ -449,12 +450,12 @@ select {
 .modal-content {
     position: relative;
     background-color: var(--container-bg-color);
-    margin: 15% auto;
+    margin: 5vh auto;
     padding: 20px;
     border-radius: var(--border-radius);
     width: 80%;
     max-width: 500px;
-    max-height: 70vh;
+    max-height: 90vh;
     overflow-y: auto;
     box-shadow: 0 4px 6px var(--shadow-color);
 }
