@@ -546,7 +546,7 @@ select {
 .settings-button {
     position: fixed;
     top: 20px;
-    right: 20px;
+    right: 100px;
     width: 40px;
     height: 40px;
     padding: 8px;
@@ -564,7 +564,6 @@ select {
 .settings-button:hover {
     background-color: var(--accent-color);
     border-color: var(--accent-color);
-    transform: rotate(90deg);
 }
 
 .settings-button svg {
