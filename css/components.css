@@ -657,3 +657,55 @@ select {
     opacity: 0.9;
     transform: translateY(-2px);
 }
+
+/* Changelog Accordion Styles */
+#changelogContent {
+    text-align: left;
+}
+
+.changelog-version {
+    background-color: var(--accent-color);
+    color: white;
+    padding: 12px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    user-select: none;
+    position: relative;
+}
+
+.changelog-version:hover {
+    opacity: 0.9;
+}
+
+.changelog-version::after {
+    content: '▼';
+    float: right;
+    transition: transform 0.3s ease;
+}
+
+.changelog-version.active::after {
+    transform: rotate(180deg);
+}
+
+.changelog-changes {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    padding: 0 15px;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.changelog-changes.show {
+    max-height: 500px;
+    padding: 10px 15px;
+}
+
+.changelog-changes p {
+    margin: 5px 0;
+    color: var(--text-color);
+    line-height: 1.5;
+}

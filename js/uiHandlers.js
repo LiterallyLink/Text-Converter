@@ -78,18 +78,68 @@ async function loadChangelog(changelogContent) {
         // Clear existing content
         changelogContent.textContent = '';
 
-        // Create paragraph elements safely (prevents XSS)
-        text.split('\n').forEach(line => {
-            const p = document.createElement('p');
-            p.textContent = line;
-            changelogContent.appendChild(p);
+        // Parse changelog into versions
+        const lines = text.split('\n');
+        let currentVersion = null;
+        let currentChanges = [];
+
+        lines.forEach(line => {
+            if (line.startsWith('Version ')) {
+                // Save previous version if it exists
+                if (currentVersion) {
+                    createChangelogSection(changelogContent, currentVersion, currentChanges);
+                }
+                // Start new version
+                currentVersion = line;
+                currentChanges = [];
+            } else if (line.trim() !== '') {
+                // Add change to current version
+                currentChanges.push(line);
+            }
         });
+
+        // Add the last version
+        if (currentVersion) {
+            createChangelogSection(changelogContent, currentVersion, currentChanges);
+        }
     } catch (error) {
         changelogContent.textContent = '';
         const errorP = document.createElement('p');
         errorP.textContent = 'Error loading changelog.';
         changelogContent.appendChild(errorP);
     }
+}
+
+/**
+ * Creates a collapsible changelog section
+ * @param {Element} container - Container element
+ * @param {string} version - Version header text
+ * @param {Array} changes - Array of change descriptions
+ */
+function createChangelogSection(container, version, changes) {
+    // Create version header (clickable)
+    const header = document.createElement('div');
+    header.className = 'changelog-version';
+    header.textContent = version;
+
+    // Create changes container (collapsible)
+    const changesDiv = document.createElement('div');
+    changesDiv.className = 'changelog-changes';
+
+    changes.forEach(change => {
+        const p = document.createElement('p');
+        p.textContent = change;
+        changesDiv.appendChild(p);
+    });
+
+    // Toggle functionality
+    header.addEventListener('click', () => {
+        header.classList.toggle('active');
+        changesDiv.classList.toggle('show');
+    });
+
+    container.appendChild(header);
+    container.appendChild(changesDiv);
 }
 
 /**
