@@ -92,9 +92,12 @@ function loadSettingsIntoModal() {
     const elements = window.textConverterElements;
     if (!elements) return;
 
-    // Load spacing
+    // Load spacing - ensure we get the current value, defaulting to 0
     if (elements.outputSpacing) {
-        document.getElementById('settingsOutputSpacing').value = elements.outputSpacing.value;
+        const currentSpacing = elements.outputSpacing.value || '0';
+        document.getElementById('settingsOutputSpacing').value = currentSpacing;
+    } else {
+        document.getElementById('settingsOutputSpacing').value = '0';
     }
 
     // Load all transformation settings
@@ -179,9 +182,9 @@ function applySettingsFromModal() {
     elements.allowRepeatSymbols.checked = document.getElementById('settingsAllowRepeatSymbols').checked;
     elements.symbolInput.value = document.getElementById('settingsSymbolInput').value;
 
-    // Update the current settings in the active profile
+    // Update the current settings in the active profile (if one is selected)
     const profileName = elements.profileSelect ? elements.profileSelect.value : '';
-    if (profileName) {
+    if (profileName && !['create_new', 'export_current', 'import_profiles'].includes(profileName)) {
         const profiles = getProfiles();
         if (profiles[profileName]) {
             profiles[profileName] = getCurrentSettings(elements);
@@ -189,7 +192,7 @@ function applySettingsFromModal() {
         }
     }
 
-    // Update output
+    // Update output with new spacing and settings
     updateOutput(elements);
 
     showNotification('Settings applied!', 'profileNotification');
