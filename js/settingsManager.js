@@ -223,6 +223,34 @@ function initSettingsModal() {
     // Apply layout preference on page load
     applyLayoutPreference();
 
+    // Settings profile selector change event
+    const settingsProfileSelect = document.getElementById('settingsProfileSelect');
+    if (settingsProfileSelect) {
+        settingsProfileSelect.addEventListener('change', function() {
+            const selectedProfile = this.value;
+            const elements = window.textConverterElements;
+
+            if (!elements) return;
+
+            // Update the main profile selector to match
+            if (elements.profileSelect) {
+                elements.profileSelect.value = selectedProfile;
+            }
+
+            // Load the selected profile's settings
+            if (selectedProfile) {
+                // Load profile settings into main elements
+                loadProfile(selectedProfile, elements);
+            } else {
+                // Load default settings
+                resetToDefaultSettings(elements);
+            }
+
+            // Reload the modal with the new profile's settings
+            loadSettingsIntoModal();
+        });
+    }
+
     // Symbol button events in settings modal
     const settingsSymbolButtons = document.querySelectorAll('#settingsFormControls .symbol-button');
     settingsSymbolButtons.forEach(button => {
