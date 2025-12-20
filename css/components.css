@@ -541,3 +541,118 @@ select {
     color: white;
     border-color: var(--accent-color);
 }
+
+/* Settings Button */
+.settings-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+    background-color: var(--container-bg-color);
+    border: 1px solid var(--input-border);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.settings-button:hover {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    transform: rotate(90deg);
+}
+
+.settings-button svg {
+    width: 20px;
+    height: 20px;
+    color: var(--text-color);
+}
+
+.settings-button:hover svg {
+    color: white;
+}
+
+/* Settings Modal */
+.settings-container {
+    padding: 10px 0;
+}
+
+.settings-section {
+    margin-bottom: 25px;
+}
+
+.settings-section h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+    color: var(--text-color);
+}
+
+.settings-section label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.settings-section select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--input-border);
+    border-radius: 5px;
+    background-color: var(--container-bg-color);
+    color: var(--text-color);
+    font-size: 1em;
+}
+
+.spacing-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.spacing-control-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.spacing-control-group label {
+    margin-bottom: 5px;
+    font-size: 0.9em;
+}
+
+.spacing-control-group input[type="number"] {
+    padding: 8px;
+    border: 1px solid var(--input-border);
+    border-radius: 5px;
+    background-color: var(--container-bg-color);
+    color: var(--text-color);
+    font-size: 1em;
+}
+
+.settings-actions {
+    margin-top: 30px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.settings-save-button {
+    padding: 10px 24px;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: all 0.3s ease;
+}
+
+.settings-save-button:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
