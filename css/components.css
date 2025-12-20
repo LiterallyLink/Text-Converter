@@ -546,9 +546,11 @@ select {
 
 /* Settings Button */
 .settings-button {
-    position: fixed;
-    top: 20px;
-    left: 20px;
+    position: fixed !important;
+    top: 20px !important;
+    left: 20px !important;
+    right: auto !important;
+    bottom: auto !important;
     width: 40px;
     height: 40px;
     padding: 8px;
@@ -560,7 +562,8 @@ select {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 100;
+    z-index: 9999 !important;
+    transform: none !important;
 }
 
 .settings-button:hover {
