@@ -551,16 +551,21 @@ function resetToDefaultSettings(elements) {
     elements.punctuationStyle.value = '';
     elements.spaceStyle.value = '';
     elements.uppercaseWordStyle.value = '';
-    
+
     // Reset symbol settings
     elements.symbolButtons.forEach(btn => btn.classList.remove('active'));
     document.getElementById('symbolButton1').classList.add('active');
     updateSymbolControls('symbolButton1', elements);
-    
+
     elements.symbolFrequencySlider.value = 50;
     elements.allowRepeatSymbols.checked = true;
     elements.symbolInput.value = '';
-    
+
+    // Reset spacing to 0
+    if (elements.outputSpacing) {
+        elements.outputSpacing.value = 0;
+    }
+
     // Update output with default settings
     updateOutput(elements);
 }
