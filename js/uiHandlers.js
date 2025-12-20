@@ -135,30 +135,11 @@ function createChangelogSection(container, version, changes, expandByDefault = f
         changesDiv.classList.add('show');
     }
 
-    let currentCategory = null;
-    let categoryList = null;
-
+    // Add all changes as simple paragraphs
     changes.forEach(change => {
-        // Check if this is a category header (New, Fixed, Improved)
-        if (change === 'New' || change === 'Fixed' || change === 'Improved') {
-            // Create category header
-            currentCategory = document.createElement('h4');
-            currentCategory.className = 'changelog-category';
-            currentCategory.textContent = change;
-            changesDiv.appendChild(currentCategory);
-
-            // Create new list for this category
-            categoryList = document.createElement('ul');
-            categoryList.className = 'changelog-list';
-            changesDiv.appendChild(categoryList);
-        } else if (change.startsWith('• ')) {
-            // This is a bullet point
-            const li = document.createElement('li');
-            li.textContent = change.substring(2); // Remove the bullet
-            if (categoryList) {
-                categoryList.appendChild(li);
-            }
-        }
+        const p = document.createElement('p');
+        p.textContent = change;
+        changesDiv.appendChild(p);
     });
 
     // Toggle functionality
