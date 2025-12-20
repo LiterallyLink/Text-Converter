@@ -687,7 +687,7 @@ select {
 }
 
 .changelog-changes.show {
-    max-height: 800px;
+    max-height: 1000px;
     padding: 5px 0 10px 0;
 }
 
@@ -696,4 +696,38 @@ select {
     color: var(--text-color);
     line-height: 1.6;
     opacity: 0.85;
+}
+
+/* Changelog Category Styles */
+.changelog-category {
+    font-weight: bold;
+    color: var(--text-color);
+    margin-top: 12px;
+    margin-bottom: 8px;
+    font-size: 1.05em;
+}
+
+/* Changelog List Styles */
+.changelog-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 0 0 10px 0;
+}
+
+.changelog-list li {
+    position: relative;
+    padding-left: 20px;
+    margin: 5px 0;
+    color: var(--text-color);
+    line-height: 1.6;
+    opacity: 0.85;
+}
+
+.changelog-list li::before {
+    content: "●";
+    position: absolute;
+    left: 0;
+    color: #a78bfa;
+    font-size: 1.1em;
+    line-height: 1.4;
 }

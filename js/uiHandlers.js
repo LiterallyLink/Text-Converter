@@ -135,11 +135,37 @@ function createChangelogSection(container, version, changes, expandByDefault = f
         changesDiv.classList.add('show');
     }
 
-    // Add all changes as simple paragraphs
+    // Parse changes into categories
+    let currentCategory = null;
+    let categoryList = null;
+
     changes.forEach(change => {
-        const p = document.createElement('p');
-        p.textContent = change;
-        changesDiv.appendChild(p);
+        const trimmedChange = change.trim();
+
+        // Check if this line is a category header
+        if (trimmedChange === 'New:' || trimmedChange === 'Fixes:' || trimmedChange === 'Changes:') {
+            // Create category header
+            const categoryHeader = document.createElement('div');
+            categoryHeader.className = 'changelog-category';
+            categoryHeader.textContent = trimmedChange;
+            changesDiv.appendChild(categoryHeader);
+
+            // Create new list for this category
+            categoryList = document.createElement('ul');
+            categoryList.className = 'changelog-list';
+            changesDiv.appendChild(categoryList);
+            currentCategory = trimmedChange;
+        } else if (trimmedChange !== '' && categoryList) {
+            // Add item to current category list
+            const li = document.createElement('li');
+            li.textContent = trimmedChange;
+            categoryList.appendChild(li);
+        } else if (trimmedChange !== '' && !categoryList) {
+            // Fallback for uncategorized items
+            const p = document.createElement('p');
+            p.textContent = trimmedChange;
+            changesDiv.appendChild(p);
+        }
     });
 
     // Toggle functionality
