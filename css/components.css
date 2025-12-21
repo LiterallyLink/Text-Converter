@@ -220,7 +220,8 @@ select {
     border-color: var(--accent-color);
 }
 
-#symbolControls {
+#symbolControls,
+#settingsSymbolControls {
     display: none;
     margin-top: 15px;
 }
@@ -236,7 +237,8 @@ select {
 }
 
 /* Base slider styles */
-#symbolFrequency {
+#symbolFrequency,
+#settingsSymbolFrequency {
     width: 100%;
     height: 8px;
     border-radius: 8px;
@@ -248,7 +250,8 @@ select {
 }
 
 /* Webkit thumb styles */
-#symbolFrequency::-webkit-slider-thumb {
+#symbolFrequency::-webkit-slider-thumb,
+#settingsSymbolFrequency::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
     width: 20px;
@@ -261,17 +264,20 @@ select {
     transition: all 0.2s ease-in-out;
 }
 
-#symbolFrequency::-webkit-slider-thumb:hover {
+#symbolFrequency::-webkit-slider-thumb:hover,
+#settingsSymbolFrequency::-webkit-slider-thumb:hover {
     transform: scale(1.1);
     background: var(--accent-color);
 }
 
-#symbolFrequency::-webkit-slider-thumb:active {
+#symbolFrequency::-webkit-slider-thumb:active,
+#settingsSymbolFrequency::-webkit-slider-thumb:active {
     transform: scale(0.95);
 }
 
 /* Firefox thumb styles */
-#symbolFrequency::-moz-range-thumb {
+#symbolFrequency::-moz-range-thumb,
+#settingsSymbolFrequency::-moz-range-thumb {
     width: 20px;
     height: 20px;
     border-radius: 50%;
@@ -282,16 +288,19 @@ select {
     transition: all 0.2s ease-in-out;
 }
 
-#symbolFrequency::-moz-range-thumb:hover {
+#symbolFrequency::-moz-range-thumb:hover,
+#settingsSymbolFrequency::-moz-range-thumb:hover {
     transform: scale(1.1);
 }
 
-#symbolFrequency::-moz-range-thumb:active {
+#symbolFrequency::-moz-range-thumb:active,
+#settingsSymbolFrequency::-moz-range-thumb:active {
     transform: scale(0.95);
 }
 
 /* Track styles for Firefox */
-#symbolFrequency::-moz-range-track {
+#symbolFrequency::-moz-range-track,
+#settingsSymbolFrequency::-moz-range-track {
     width: 100%;
     height: 8px;
     background: var(--input-border);
@@ -300,15 +309,18 @@ select {
 }
 
 /* Active state styles */
-#symbolFrequency:focus {
+#symbolFrequency:focus,
+#settingsSymbolFrequency:focus {
     outline: none;
 }
 
-#symbolFrequency:focus::-webkit-slider-thumb {
+#symbolFrequency:focus::-webkit-slider-thumb,
+#settingsSymbolFrequency:focus::-webkit-slider-thumb {
     box-shadow: 0 0 0 2px var(--container-bg-color), 0 0 0 4px var(--accent-color);
 }
 
-#symbolFrequency:focus::-moz-range-thumb {
+#symbolFrequency:focus::-moz-range-thumb,
+#settingsSymbolFrequency:focus::-moz-range-thumb {
     box-shadow: 0 0 0 2px var(--container-bg-color), 0 0 0 4px var(--accent-color);
 }
 
@@ -325,7 +337,8 @@ select {
     opacity: 0.8;
 }
 
-#symbolInput {
+#symbolInput,
+#settingsSymbolInput {
     display: none;
     margin-top: 10px;
     width: 100%;
