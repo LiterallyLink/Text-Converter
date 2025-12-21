@@ -1,3 +1,17 @@
+Version 1.3.1 — December 21, 2025
+
+Fixes:
+Settings and theme buttons now hidden when modal is open
+Settings modal opens at top of screen on mobile (not pushed down)
+Settings and theme buttons scroll with page content on mobile
+Background scrolling disabled when settings modal is open
+Slider styling now consistent between main page and settings modal
+
+Changes:
+Desktop buttons remain fixed in viewport (original behavior)
+Mobile buttons use absolute positioning to scroll with content
+Slider in settings modal matches main page styling with rounded track and circular thumb
+
 Version 1.3.0 — December 20, 2025
 
 New:
