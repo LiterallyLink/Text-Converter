@@ -104,7 +104,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Close buttons for all modals
     closeButtons.forEach(button => {
         button.addEventListener('click', function() {
-            this.closest('.modal').style.display = 'none';
+            const modal = this.closest('.modal');
+            if (modal === settingsModal) {
+                closeSettingsModal();
+            } else {
+                modal.style.display = 'none';
+            }
         });
     });
 
@@ -117,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
             privacyPolicyModal.style.display = 'none';
         }
         if (e.target === settingsModal) {
-            settingsModal.style.display = 'none';
+            closeSettingsModal();
         }
     });
 });
