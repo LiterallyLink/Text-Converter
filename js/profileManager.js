@@ -59,7 +59,8 @@ function getCurrentSettings(elements) {
         symbolFrequency: elements.symbolFrequencySlider.value,
         allowRepeatSymbols: elements.allowRepeatSymbols.checked,
         customSymbols: elements.symbolInput.value,
-        spacing: spacing
+        spacing: spacing,
+        textAlignment: elements.textAlignment ? elements.textAlignment.value === 'true' : false
     };
 }
 
@@ -98,6 +99,13 @@ function applySettings(settings, elements) {
     // Apply spacing settings (default to 0)
     if (elements.outputSpacing) {
         elements.outputSpacing.value = settings.spacing !== undefined ? settings.spacing : 0;
+    }
+
+    // Apply text alignment setting
+    if (elements.textAlignment) {
+        const enabled = settings.textAlignment !== undefined ? settings.textAlignment : false;
+        elements.textAlignment.value = enabled.toString();
+        setTextAlignmentPreference(enabled);
     }
 
     // Update output with new settings

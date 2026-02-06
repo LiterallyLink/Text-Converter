@@ -88,8 +88,8 @@ function addSymbols(text, elements) {
     const spaceStyle = elements.spaceStyle.value;
     const spaceChar = SPACE_STYLES[spaceStyle] || ' ';
     
-    // Split text by any type of space character
-    const words = text.split(/\s+/);
+    // Split text by spaces only (preserve newlines)
+    const words = text.split(/ +/);
     const allowRepeats = elements.allowRepeatSymbols.checked;
     
     if (activeButton.id === 'symbolButton2') {
@@ -184,10 +184,55 @@ function updateOutput(elements) {
         elements.spaceStyle.value
     );
 
+    // Apply text alignment (word wrap) before spacing
+    processedText = applyTextAlignment(processedText, elements);
+
     // Apply spacing settings (newlines before and after)
     processedText = applySpacing(processedText, elements);
 
     elements.output.innerHTML = processedText;
+}
+
+/**
+ * Wraps text to a max character width, breaking at word boundaries
+ * @param {string} text - Input text
+ * @param {Object} elements - DOM elements object
+ * @returns {string} Text with line breaks inserted
+ */
+function applyTextAlignment(text, elements) {
+    const enabled = elements.textAlignment ? elements.textAlignment.value === 'true' : false;
+    if (!enabled) return text;
+
+    const maxWidth = 35; // Twitter-optimized line width
+    const lines = text.split('\n');
+    const wrappedLines = [];
+
+    for (const line of lines) {
+        if (line.length <= maxWidth) {
+            wrappedLines.push(line);
+            continue;
+        }
+
+        const words = line.split(/ +/);
+        let currentLine = '';
+
+        for (const word of words) {
+            if (currentLine === '') {
+                currentLine = word;
+            } else if ((currentLine + ' ' + word).length <= maxWidth) {
+                currentLine += ' ' + word;
+            } else {
+                wrappedLines.push(currentLine);
+                currentLine = word;
+            }
+        }
+
+        if (currentLine) {
+            wrappedLines.push(currentLine);
+        }
+    }
+
+    return wrappedLines.join('\n');
 }
 
 /**

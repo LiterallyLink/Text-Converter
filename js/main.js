@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         saveProfileButton: document.getElementById('saveProfileButton'),
         deleteProfileButton: document.getElementById('deleteProfileButton'),
         outputSpacing: document.getElementById('outputSpacing'),
+        textAlignment: document.getElementById('textAlignment'),
     };
 
     // Store elements globally for import/export access

@@ -65,18 +65,20 @@
         
         <section>
             <label for="inputText" class="sr-only">Enter your text</label>
-            <input
-                type="text"
+            <textarea
                 id="inputText"
                 placeholder="Enter your text here..."
                 aria-describedby="textInstructions"
-            >
+                rows="3"
+            ></textarea>
             <p id="textInstructions" class="sr-only">
                 Type text to see it styled with special first letter and comma options
             </p>
 
             <!-- Hidden input to store output spacing value -->
             <input type="hidden" id="outputSpacing" value="0">
+            <!-- Hidden input to store text alignment preference -->
+            <input type="hidden" id="textAlignment" value="false">
 
             <div id="advancedControls">
             <label for="firstLetterFont">Select First Letter Style</label>
@@ -307,6 +309,17 @@
                                 <input type="checkbox" id="showControlsOnMain">
                                 <span class="checkmark"></span>
                                 Show Controls Outside of Settings
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Text Alignment</h3>
+                        <div class="checkbox-container">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="enableTextAlignment">
+                                <span class="checkmark"></span>
+                                Enable Text Alignment (Twitter-optimized wrapping)
                             </label>
                         </div>
                     </div>
