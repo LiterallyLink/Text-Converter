@@ -194,8 +194,9 @@ function updateOutput(elements) {
 }
 
 /**
- * Wraps text to a max character width, breaking at word boundaries
- * @param {string} text - Input text
+ * Wraps text using minimum raggedness algorithm for balanced line lengths.
+ * Splits on any Unicode whitespace to handle special space characters.
+ * @param {string} text - Input text (may contain Unicode spaces and symbols)
  * @param {Object} elements - DOM elements object
  * @returns {string} Text with line breaks inserted
  */
@@ -203,33 +204,69 @@ function applyTextAlignment(text, elements) {
     const enabled = elements.textAlignment ? elements.textAlignment.value === 'true' : false;
     if (!enabled) return text;
 
-    const maxWidth = 35; // Twitter-optimized line width
+    const maxWidth = 35;
+    // Match any Unicode whitespace character (but not newlines)
+    const spacePattern = /[^\S\n]+/;
     const lines = text.split('\n');
     const wrappedLines = [];
 
     for (const line of lines) {
-        if (line.length <= maxWidth) {
+        // Split on any whitespace, capture the separator to preserve special spaces
+        const parts = line.split(spacePattern);
+        const words = parts.filter(w => w.length > 0);
+        if (words.length <= 1) {
             wrappedLines.push(line);
             continue;
         }
 
-        const words = line.split(/ +/);
-        let currentLine = '';
+        // Detect which space character is used in this line
+        const spaceMatch = line.match(/[^\S\n]/);
+        const spaceChar = spaceMatch ? spaceMatch[0] : ' ';
 
-        for (const word of words) {
-            if (currentLine === '') {
-                currentLine = word;
-            } else if ((currentLine + ' ' + word).length <= maxWidth) {
-                currentLine += ' ' + word;
-            } else {
-                wrappedLines.push(currentLine);
-                currentLine = word;
+        const totalChars = words.reduce((sum, w) => sum + w.length, 0);
+        const totalWithSpaces = totalChars + (words.length - 1);
+
+        if (totalWithSpaces <= maxWidth) {
+            wrappedLines.push(words.join(spaceChar));
+            continue;
+        }
+
+        // Minimum raggedness dynamic programming
+        const n = words.length;
+
+        function lineCost(i, j) {
+            let width = -1;
+            for (let k = i; k <= j; k++) {
+                width += words[k].length + 1;
+            }
+            if (width > maxWidth) return Infinity;
+            return Math.pow(maxWidth - width, 2);
+        }
+
+        const dp = new Array(n + 1).fill(Infinity);
+        const breaks = new Array(n + 1).fill(0);
+        dp[0] = 0;
+
+        for (let j = 1; j <= n; j++) {
+            for (let i = j; i >= 1; i--) {
+                const cost = lineCost(i - 1, j - 1);
+                if (cost === Infinity) break;
+                if (dp[i - 1] + cost < dp[j]) {
+                    dp[j] = dp[i - 1] + cost;
+                    breaks[j] = i - 1;
+                }
             }
         }
 
-        if (currentLine) {
-            wrappedLines.push(currentLine);
+        // Reconstruct lines from break points
+        const result = [];
+        let idx = n;
+        while (idx > 0) {
+            const start = breaks[idx];
+            result.unshift(words.slice(start, idx).join(spaceChar));
+            idx = start;
         }
+        wrappedLines.push(...result);
     }
 
     return wrappedLines.join('\n');
