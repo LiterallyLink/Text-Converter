@@ -3,7 +3,8 @@
     "allow": [
       "Bash(git remote:*)",
       "Bash(git fetch:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(node:*)"
     ]
   }
 }

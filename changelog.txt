@@ -1,3 +1,21 @@
+Version 1.4.0 — February 6, 2026
+
+New:
+Text alignment feature using minimum raggedness algorithm for balanced line wrapping
+Multi-line text input - textarea now supports newlines
+Text alignment toggle in settings modal, saved per-profile
+
+Fixes:
+Settings modal close button (X) now properly restores cog wheel and dark mode button on mobile
+Clicking outside settings modal now properly restores buttons
+Apply Settings button no longer hidden behind mobile browser bars
+Newlines preserved through text transformation pipeline
+
+Changes:
+Input field changed from single-line input to multi-line textarea
+Settings modal height optimized for mobile accessibility
+Text alignment handles Unicode spaces and symbols from text transformations
+
 Version 1.3.1 — December 21, 2025
 
 Fixes:
