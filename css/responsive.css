@@ -49,16 +49,20 @@
         width: 90%;
         margin: 0 auto;
         padding: 15px;
+        padding-bottom: 0;
         max-height: 90vh;
         overflow-y: auto;
-        /* Account for mobile browser UI bars */
-        padding-bottom: calc(15px + env(safe-area-inset-bottom));
     }
 
-    /* Ensure settings button is always accessible */
+    /* Keep Apply Settings button visible at the bottom of the modal */
     .settings-actions {
-        padding-bottom: 20px;
+        position: sticky;
+        bottom: 0;
         margin-top: 20px;
+        padding: 15px 0;
+        padding-bottom: calc(15px + env(safe-area-inset-bottom));
+        background-color: var(--container-bg-color);
+        z-index: 1;
     }
 
     .settings-save-button {
