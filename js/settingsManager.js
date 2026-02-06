@@ -21,6 +21,38 @@ function setLayoutPreference(show) {
 }
 
 /**
+ * Gets the text alignment preference from localStorage
+ * @returns {boolean} Whether text alignment is enabled
+ */
+function getTextAlignmentPreference() {
+    return localStorage.getItem('textAlignment') === 'true';
+}
+
+/**
+ * Sets the text alignment preference in localStorage
+ * @param {boolean} enabled - Whether text alignment is enabled
+ */
+function setTextAlignmentPreference(enabled) {
+    localStorage.setItem('textAlignment', enabled.toString());
+}
+
+/**
+ * Applies the text alignment preference
+ */
+function applyTextAlignmentPreference() {
+    const enabled = getTextAlignmentPreference();
+    const hiddenInput = document.getElementById('textAlignment');
+    const checkbox = document.getElementById('enableTextAlignment');
+
+    if (hiddenInput) {
+        hiddenInput.value = enabled.toString();
+    }
+    if (checkbox) {
+        checkbox.checked = enabled;
+    }
+}
+
+/**
  * Applies the layout preference (show/hide main page controls)
  */
 function applyLayoutPreference() {
@@ -106,6 +138,12 @@ function loadSettingsIntoModal() {
         document.getElementById('settingsOutputSpacing').value = '0';
     }
 
+    // Load text alignment setting
+    const alignmentCheckbox = document.getElementById('enableTextAlignment');
+    if (alignmentCheckbox && elements.textAlignment) {
+        alignmentCheckbox.checked = elements.textAlignment.value === 'true';
+    }
+
     // Load all transformation settings
     document.getElementById('settingsFirstLetterFont').value = elements.firstLetterFont.value;
     document.getElementById('settingsCommaStyle').value = elements.commaStyle.value;
@@ -158,6 +196,13 @@ function applySettingsFromModal() {
     const showControls = document.getElementById('showControlsOnMain').checked;
     setLayoutPreference(showControls);
     applyLayoutPreference();
+
+    // Apply text alignment
+    const textAlignmentEnabled = document.getElementById('enableTextAlignment').checked;
+    setTextAlignmentPreference(textAlignmentEnabled);
+    if (elements.textAlignment) {
+        elements.textAlignment.value = textAlignmentEnabled.toString();
+    }
 
     // Apply spacing
     const spacing = parseInt(document.getElementById('settingsOutputSpacing').value) || 0;
@@ -226,8 +271,9 @@ function showNotification(message, notificationId) {
  * Initializes settings modal event listeners
  */
 function initSettingsModal() {
-    // Apply layout preference on page load
+    // Apply preferences on page load
     applyLayoutPreference();
+    applyTextAlignmentPreference();
 
     // Settings profile selector change event
     const settingsProfileSelect = document.getElementById('settingsProfileSelect');
