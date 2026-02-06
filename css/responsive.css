@@ -50,8 +50,8 @@
         margin: 0 auto;
         padding: 15px;
         padding-bottom: 0;
-        max-height: 87vh;
-        max-height: 87dvh;
+        max-height: 95vh;
+        max-height: 95dvh;
         overflow-y: auto;
     }
 
