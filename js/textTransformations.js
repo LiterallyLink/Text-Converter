@@ -5,15 +5,21 @@
 
 /**
  * Applies markdown-like inline styles:
+ *   __word__ → underline using Unicode combining low line (U+0332)
  *   **word** → bold using the selected uppercase word style
  *   *word*  → italic using ITALIC_FONTS
- * Processes double asterisks first to avoid conflicts with single.
+ * Processes underline first, then double asterisks, then single.
  * @param {string} text - Input text
  * @param {string} uppercaseStyle - Selected uppercase word style
  * @returns {string} Text with styled words
  */
 function applyMarkdownStyles(text, uppercaseStyle) {
-    // Process **bold** first
+    // Process __underline__ first (before bold/italic)
+    text = text.replace(/__(.+?)__/g, (match, word) => {
+        return word.split('').map(char => char + '\u0332').join('');
+    });
+
+    // Process **bold** next
     text = text.replace(/\*\*(.+?)\*\*/g, (match, word) => {
         if (!uppercaseStyle || !UPPERCASE_WORD_STYLES[uppercaseStyle]) return word;
         return UPPERCASE_WORD_STYLES[uppercaseStyle].transform(word);
