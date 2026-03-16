@@ -4,6 +4,30 @@
  */
 
 /**
+ * Applies markdown-like inline styles:
+ *   **word** → bold using the selected uppercase word style
+ *   *word*  → italic using ITALIC_FONTS
+ * Processes double asterisks first to avoid conflicts with single.
+ * @param {string} text - Input text
+ * @param {string} uppercaseStyle - Selected uppercase word style
+ * @returns {string} Text with styled words
+ */
+function applyMarkdownStyles(text, uppercaseStyle) {
+    // Process **bold** first
+    text = text.replace(/\*\*(.+?)\*\*/g, (match, word) => {
+        if (!uppercaseStyle || !UPPERCASE_WORD_STYLES[uppercaseStyle]) return word;
+        return UPPERCASE_WORD_STYLES[uppercaseStyle].transform(word);
+    });
+
+    // Process *italic*
+    text = text.replace(/\*(.+?)\*/g, (match, word) => {
+        return word.split('').map(char => ITALIC_FONTS[char] || char).join('');
+    });
+
+    return text;
+}
+
+/**
  * Replaces the first letter with a styled version based on selected font
  * @param {string} text - Input text
  * @param {string} fontStyle - Selected font style
@@ -12,9 +36,12 @@
 function replaceFirstLetter(text, fontStyle) {
     if (!fontStyle) return text;
 
-    const firstLetter = text.charAt(0);
-    const replacementLetter = FIRST_LETTER_FONTS[fontStyle]?.[firstLetter] || firstLetter;
-    return replacementLetter + text.slice(1);
+    return text.split('\n').map(line => {
+        if (!line) return line;
+        const firstLetter = line.charAt(0);
+        const replacementLetter = FIRST_LETTER_FONTS[fontStyle]?.[firstLetter] || firstLetter;
+        return replacementLetter + line.slice(1);
+    }).join('\n');
 }
 
 /**
@@ -160,6 +187,10 @@ function updateOutput(elements) {
     }
 
     // Apply text transformations in the correct order
+    processedText = applyMarkdownStyles(
+        processedText,
+        elements.uppercaseWordStyle.value
+    );
     processedText = replaceFirstLetter(
         processedText,
         elements.firstLetterFont.value

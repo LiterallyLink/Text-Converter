@@ -4,7 +4,14 @@
       "Bash(git remote:*)",
       "Bash(git fetch:*)",
       "Bash(grep:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(wc -l /c/Users/Zechariah/Desktop/Programming/GitHub/Text-Converter/css/*.css)",
+      "WebSearch",
+      "WebFetch(domain:qbotype.com)",
+      "WebFetch(domain:en.wikipedia.org)",
+      "WebFetch(domain:www.amp-what.com)",
+      "WebFetch(domain:symbl.cc)",
+      "Bash(node -e \":*)"
     ]
   }
 }
