@@ -1,3 +1,11 @@
+Version 1.5.0 — March 15, 2026
+
+New:
+Markdown-style inline formatting: *word* for italic, **word** for bold (uses selected uppercase word style)
+First letter styling now applies to each paragraph/line, not just the first line
+
+---
+
 Version 1.4.0 — February 6, 2026
 
 New:
