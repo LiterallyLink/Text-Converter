@@ -79,6 +79,8 @@
             <input type="hidden" id="outputSpacing" value="0">
             <!-- Hidden input to store text alignment preference -->
             <input type="hidden" id="textAlignment" value="false">
+            <!-- Hidden input to store text alignment width -->
+            <input type="hidden" id="alignmentWidth" value="35">
 
             <div id="advancedControls">
             <label for="firstLetterFont">Select First Letter Style</label>
@@ -319,8 +321,15 @@
                             <label class="checkbox-label">
                                 <input type="checkbox" id="enableTextAlignment">
                                 <span class="checkmark"></span>
-                                Enable Text Alignment (Twitter-optimized wrapping)
+                                Enable Text Alignment
                             </label>
+                        </div>
+                        <div id="alignmentWidthContainer" class="alignment-width-container" style="display: none;">
+                            <label for="settingsAlignmentWidth">Line Width: <span id="alignmentWidthValue">35</span></label>
+                            <div class="slider-wrapper">
+                                <input type="range" id="settingsAlignmentWidth" min="15" max="80" value="35" step="1">
+                            </div>
+                            <div class="alignment-preview" id="alignmentPreview"></div>
                         </div>
                     </div>
 

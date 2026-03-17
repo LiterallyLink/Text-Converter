@@ -345,6 +345,80 @@ select {
     opacity: 0.8;
 }
 
+/* Alignment width slider & preview */
+.alignment-width-container {
+    margin-top: 12px;
+    padding-top: 8px;
+}
+
+.alignment-width-container label {
+    font-size: 0.875rem;
+    color: var(--text-color);
+}
+
+#settingsAlignmentWidth {
+    width: 100%;
+    height: 8px;
+    border-radius: 8px;
+    background: var(--input-border);
+    outline: none;
+    -webkit-appearance: none;
+    margin: 10px 0;
+    cursor: pointer;
+}
+
+#settingsAlignmentWidth::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    cursor: pointer;
+    border: 2px solid var(--container-bg-color);
+    box-shadow: 0 0 2px var(--shadow-color);
+    transition: all 0.2s ease-in-out;
+}
+
+#settingsAlignmentWidth::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+}
+
+#settingsAlignmentWidth::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    cursor: pointer;
+    border: 2px solid var(--container-bg-color);
+    box-shadow: 0 0 2px var(--shadow-color);
+    transition: all 0.2s ease-in-out;
+}
+
+#settingsAlignmentWidth::-moz-range-track {
+    width: 100%;
+    height: 8px;
+    background: var(--input-border);
+    border-radius: 8px;
+    border: none;
+}
+
+.alignment-preview {
+    margin-top: 10px;
+    padding: 10px;
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: var(--text-color);
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.4;
+    max-height: 120px;
+    overflow-y: auto;
+}
+
 #symbolInput,
 #settingsSymbolInput {
     display: none;
