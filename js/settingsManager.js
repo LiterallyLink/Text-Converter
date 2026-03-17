@@ -37,6 +37,49 @@ function setTextAlignmentPreference(enabled) {
 }
 
 /**
+ * Gets the alignment width from localStorage
+ * @returns {number} The alignment width (default 35)
+ */
+function getAlignmentWidthPreference() {
+    return parseInt(localStorage.getItem('alignmentWidth')) || 35;
+}
+
+/**
+ * Sets the alignment width in localStorage
+ * @param {number} width - The alignment width
+ */
+function setAlignmentWidthPreference(width) {
+    localStorage.setItem('alignmentWidth', width.toString());
+}
+
+/**
+ * Updates the alignment preview with wrapped lorem ipsum text
+ * @param {number} maxWidth - The max line width
+ */
+function updateAlignmentPreview(maxWidth) {
+    const preview = document.getElementById('alignmentPreview');
+    if (!preview) return;
+
+    const lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.";
+    const words = lorem.split(' ');
+    const lines = [];
+    let currentLine = '';
+
+    for (const word of words) {
+        const test = currentLine ? currentLine + ' ' + word : word;
+        if (test.length > maxWidth && currentLine) {
+            lines.push(currentLine);
+            currentLine = word;
+        } else {
+            currentLine = test;
+        }
+    }
+    if (currentLine) lines.push(currentLine);
+
+    preview.textContent = lines.join('\n');
+}
+
+/**
  * Applies the text alignment preference
  */
 function applyTextAlignmentPreference() {
@@ -50,6 +93,19 @@ function applyTextAlignmentPreference() {
     if (checkbox) {
         checkbox.checked = enabled;
     }
+
+    // Apply alignment width
+    const width = getAlignmentWidthPreference();
+    const widthInput = document.getElementById('alignmentWidth');
+    const slider = document.getElementById('settingsAlignmentWidth');
+    const valueLabel = document.getElementById('alignmentWidthValue');
+    const container = document.getElementById('alignmentWidthContainer');
+
+    if (widthInput) widthInput.value = width;
+    if (slider) slider.value = width;
+    if (valueLabel) valueLabel.textContent = width;
+    if (container) container.style.display = enabled ? 'block' : 'none';
+    if (enabled) updateAlignmentPreview(width);
 }
 
 /**
@@ -144,6 +200,20 @@ function loadSettingsIntoModal() {
         alignmentCheckbox.checked = elements.textAlignment.value === 'true';
     }
 
+    // Load alignment width
+    const alignmentSlider = document.getElementById('settingsAlignmentWidth');
+    const alignmentWidthLabel = document.getElementById('alignmentWidthValue');
+    const alignmentContainer = document.getElementById('alignmentWidthContainer');
+    if (alignmentSlider && elements.alignmentWidth) {
+        alignmentSlider.value = elements.alignmentWidth.value;
+        if (alignmentWidthLabel) alignmentWidthLabel.textContent = elements.alignmentWidth.value;
+    }
+    if (alignmentContainer) {
+        const isEnabled = alignmentCheckbox && alignmentCheckbox.checked;
+        alignmentContainer.style.display = isEnabled ? 'block' : 'none';
+        if (isEnabled) updateAlignmentPreview(parseInt(alignmentSlider.value));
+    }
+
     // Load all transformation settings
     document.getElementById('settingsFirstLetterFont').value = elements.firstLetterFont.value;
     document.getElementById('settingsCommaStyle').value = elements.commaStyle.value;
@@ -202,6 +272,13 @@ function applySettingsFromModal() {
     setTextAlignmentPreference(textAlignmentEnabled);
     if (elements.textAlignment) {
         elements.textAlignment.value = textAlignmentEnabled.toString();
+    }
+
+    // Apply alignment width
+    const alignmentWidth = parseInt(document.getElementById('settingsAlignmentWidth').value) || 35;
+    setAlignmentWidthPreference(alignmentWidth);
+    if (elements.alignmentWidth) {
+        elements.alignmentWidth.value = alignmentWidth;
     }
 
     // Apply spacing
@@ -312,4 +389,29 @@ function initSettingsModal() {
             updateSettingsSymbolControls(this.id);
         });
     });
+
+    // Alignment checkbox toggle - show/hide width slider
+    const alignCheckbox = document.getElementById('enableTextAlignment');
+    if (alignCheckbox) {
+        alignCheckbox.addEventListener('change', function() {
+            const container = document.getElementById('alignmentWidthContainer');
+            if (container) {
+                container.style.display = this.checked ? 'block' : 'none';
+                if (this.checked) {
+                    const slider = document.getElementById('settingsAlignmentWidth');
+                    updateAlignmentPreview(parseInt(slider.value));
+                }
+            }
+        });
+    }
+
+    // Alignment width slider - update label and preview
+    const alignSlider = document.getElementById('settingsAlignmentWidth');
+    if (alignSlider) {
+        alignSlider.addEventListener('input', function() {
+            const label = document.getElementById('alignmentWidthValue');
+            if (label) label.textContent = this.value;
+            updateAlignmentPreview(parseInt(this.value));
+        });
+    }
 }

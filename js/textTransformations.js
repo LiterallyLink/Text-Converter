@@ -5,23 +5,57 @@
 
 /**
  * Applies markdown-like inline styles:
- *   **word** → bold using the selected uppercase word style
- *   *word*  → italic using ITALIC_FONTS
- * Processes double asterisks first to avoid conflicts with single.
+ *   ***word*** → bold italic using BOLD_ITALIC_FONTS
+ *   **word**   → bold using the selected uppercase word style
+ *   *word*     → italic using ITALIC_FONTS
+ * First letter font takes priority over markdown styling for line-starting characters.
  * @param {string} text - Input text
  * @param {string} uppercaseStyle - Selected uppercase word style
+ * @param {string} firstLetterFont - Selected first letter font style
  * @returns {string} Text with styled words
  */
-function applyMarkdownStyles(text, uppercaseStyle) {
-    // Process **bold** first
-    text = text.replace(/\*\*(.+?)\*\*/g, (match, word) => {
-        if (!uppercaseStyle || !UPPERCASE_WORD_STYLES[uppercaseStyle]) return word;
-        return UPPERCASE_WORD_STYLES[uppercaseStyle].transform(word);
+function applyMarkdownStyles(text, uppercaseStyle, firstLetterFont) {
+    // Track which positions are line-starts (after splitting by \n)
+    const lineStarts = new Set();
+    let pos = 0;
+    lineStarts.add(0);
+    for (let i = 0; i < text.length; i++) {
+        if (text[i] === '\n') lineStarts.add(i + 1);
+    }
+
+    // Helper: apply first letter font to first char, preserve rest of styled text
+    function applyFirstLetter(word, styled, offset) {
+        if (firstLetterFont && lineStarts.has(offset)) {
+            const firstChar = word.charAt(0);
+            const firstStyled = FIRST_LETTER_FONTS[firstLetterFont]?.[firstChar] || firstChar;
+            // Styled chars may be surrogate pairs; drop the first codepoint properly
+            const styledChars = [...styled];
+            return firstStyled + styledChars.slice(1).join('');
+        }
+        return styled;
+    }
+
+    // Process ***bold italic*** first
+    text = text.replace(/\*\*\*(.+?)\*\*\*/g, (match, word, offset) => {
+        const styled = word.split('').map(char => BOLD_ITALIC_FONTS[char] || char).join('');
+        return applyFirstLetter(word, styled, offset);
+    });
+
+    // Process **bold**
+    text = text.replace(/\*\*(.+?)\*\*/g, (match, word, offset) => {
+        let styled;
+        if (uppercaseStyle && UPPERCASE_WORD_STYLES[uppercaseStyle]) {
+            styled = UPPERCASE_WORD_STYLES[uppercaseStyle].transform(word);
+        } else {
+            styled = word;
+        }
+        return applyFirstLetter(word, styled, offset);
     });
 
     // Process *italic*
-    text = text.replace(/\*(.+?)\*/g, (match, word) => {
-        return word.split('').map(char => ITALIC_FONTS[char] || char).join('');
+    text = text.replace(/\*(.+?)\*/g, (match, word, offset) => {
+        const styled = word.split('').map(char => ITALIC_FONTS[char] || char).join('');
+        return applyFirstLetter(word, styled, offset);
     });
 
     return text;
@@ -189,7 +223,8 @@ function updateOutput(elements) {
     // Apply text transformations in the correct order
     processedText = applyMarkdownStyles(
         processedText,
-        elements.uppercaseWordStyle.value
+        elements.uppercaseWordStyle.value,
+        elements.firstLetterFont.value
     );
     processedText = replaceFirstLetter(
         processedText,
@@ -235,7 +270,7 @@ function applyTextAlignment(text, elements) {
     const enabled = elements.textAlignment ? elements.textAlignment.value === 'true' : false;
     if (!enabled) return text;
 
-    const maxWidth = 35;
+    const maxWidth = elements.alignmentWidth ? parseInt(elements.alignmentWidth.value) || 35 : 35;
     // Match any Unicode whitespace character (but not newlines)
     const spacePattern = /[^\S\n]+/;
     const lines = text.split('\n');
