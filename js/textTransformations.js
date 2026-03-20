@@ -231,6 +231,13 @@ function updateOutput(elements) {
 }
 
 /**
+ * Returns the visible length of a word, excluding formatting markers (* ** __)
+ */
+function visibleLength(word) {
+    return word.replace(/\*\*|__|\*/g, '').length;
+}
+
+/**
  * Wraps text using minimum raggedness algorithm for balanced line lengths.
  * Splits on any Unicode whitespace to handle special space characters.
  * @param {string} text - Input text (may contain Unicode spaces and symbols)
@@ -260,7 +267,7 @@ function applyTextAlignment(text, elements) {
         const spaceMatch = line.match(/[^\S\n]/);
         const spaceChar = spaceMatch ? spaceMatch[0] : ' ';
 
-        const totalChars = words.reduce((sum, w) => sum + w.length, 0);
+        const totalChars = words.reduce((sum, w) => sum + visibleLength(w), 0);
         const totalWithSpaces = totalChars + (words.length - 1);
 
         if (totalWithSpaces <= maxWidth) {
@@ -274,7 +281,7 @@ function applyTextAlignment(text, elements) {
         function lineCost(i, j) {
             let width = -1;
             for (let k = i; k <= j; k++) {
-                width += words[k].length + 1;
+                width += visibleLength(words[k]) + 1;
             }
             if (width > maxWidth) return Infinity;
             return Math.pow(maxWidth - width, 2);
