@@ -234,7 +234,7 @@ function updateOutput(elements) {
  * Returns the visible length of a word, excluding formatting markers (* ** __)
  */
 function visibleLength(word) {
-    return word.replace(/\*\*|__|\*/g, '').length;
+    return [...word.replace(/\*\*|__|\*/g, '')].length;
 }
 
 /**
@@ -248,7 +248,7 @@ function applyTextAlignment(text, elements) {
     const enabled = elements.textAlignment ? elements.textAlignment.value === 'true' : false;
     if (!enabled) return text;
 
-    const maxWidth = 35;
+    const maxWidth = elements.alignmentWidth ? parseInt(elements.alignmentWidth.value) || 35 : 35;
     // Match any Unicode whitespace character (but not newlines)
     const spacePattern = /[^\S\n]+/;
     const lines = text.split('\n');
