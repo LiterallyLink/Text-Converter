@@ -42,8 +42,12 @@ function applyMarkdownStyles(text, uppercaseStyle) {
 function replaceFirstLetter(text, fontStyle) {
     if (!fontStyle) return text;
 
-    return text.split('\n').map(line => {
+    const lines = text.split('\n');
+    return lines.map((line, i) => {
         if (!line) return line;
+        // Only style paragraph starts: first line, or lines after a blank line
+        const isParagraphStart = i === 0 || lines[i - 1] === '';
+        if (!isParagraphStart) return line;
         const firstLetter = line.charAt(0);
         const replacementLetter = FIRST_LETTER_FONTS[fontStyle]?.[firstLetter] || firstLetter;
         return replacementLetter + line.slice(1);
@@ -197,10 +201,6 @@ function updateOutput(elements) {
         processedText,
         elements.uppercaseWordStyle.value
     );
-    processedText = replaceFirstLetter(
-        processedText,
-        elements.firstLetterFont.value
-    );
     processedText = replaceUppercaseWords(
         processedText,
         elements.uppercaseWordStyle.value
@@ -223,6 +223,12 @@ function updateOutput(elements) {
 
     // Apply text alignment (word wrap) before spacing
     processedText = applyTextAlignment(processedText, elements);
+
+    // Apply first letter styling after alignment, paragraph starts only
+    processedText = replaceFirstLetter(
+        processedText,
+        elements.firstLetterFont.value
+    );
 
     // Apply spacing settings (newlines before and after)
     processedText = applySpacing(processedText, elements);

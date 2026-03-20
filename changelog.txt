@@ -3,6 +3,7 @@ Version 1.6.1 — March 19, 2026
 Fixes:
 Text alignment width setting now actually applies — was hardcoded to 35 and ignored the slider value
 Unicode characters (cursive, gothic, etc.) no longer counted as double-width in line wrapping calculations
+First letter styling now only applies to paragraph starts, not every wrapped line
 
 ---
 
