@@ -4,6 +4,10 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Generate controls from single source of truth
+    renderControls('advancedControls', 'main');
+    renderControls('settingsFormControls', 'settings');
+
     // DOM Elements
     const elements = {
         inputText: document.getElementById('inputText'),
