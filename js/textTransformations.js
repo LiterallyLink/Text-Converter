@@ -39,18 +39,24 @@ function applyMarkdownStyles(text, uppercaseStyle) {
  * @param {string} fontStyle - Selected font style
  * @returns {string} Text with styled first letter
  */
-function replaceFirstLetter(text, fontStyle) {
+function replaceFirstLetter(text, fontStyle, originalText) {
     if (!fontStyle) return text;
 
     const lines = text.split('\n');
+    const originalLines = originalText ? originalText.split('\n') : lines;
     return lines.map((line, i) => {
         if (!line) return line;
         // Only style paragraph starts: first line, or lines after a blank line
         const isParagraphStart = i === 0 || lines[i - 1] === '';
         if (!isParagraphStart) return line;
-        const firstLetter = line.charAt(0);
-        const replacementLetter = FIRST_LETTER_FONTS[fontStyle]?.[firstLetter] || firstLetter;
-        return replacementLetter + line.slice(1);
+        // Use the original text's first letter for lookup, since the current
+        // first character may already be a styled Unicode character
+        const originalFirstLetter = (originalLines[i] || line).charAt(0);
+        const replacementLetter = FIRST_LETTER_FONTS[fontStyle]?.[originalFirstLetter];
+        if (!replacementLetter) return line;
+        // Replace the first character (which may be a multi-byte styled char)
+        const firstChar = [...line][0];
+        return replacementLetter + line.slice(firstChar.length);
     }).join('\n');
 }
 
@@ -196,6 +202,8 @@ function updateOutput(elements) {
         return;
     }
 
+    const originalText = processedText;
+
     // Apply text transformations in the correct order
     processedText = applyMarkdownStyles(
         processedText,
@@ -225,9 +233,11 @@ function updateOutput(elements) {
     processedText = applyTextAlignment(processedText, elements);
 
     // Apply first letter styling after alignment, paragraph starts only
+    // Pass original text so the lookup uses ASCII letters even if they've been styled
     processedText = replaceFirstLetter(
         processedText,
-        elements.firstLetterFont.value
+        elements.firstLetterFont.value,
+        originalText
     );
 
     // Apply spacing settings (newlines before and after)
