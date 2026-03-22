@@ -12,7 +12,8 @@
       "WebFetch(domain:www.amp-what.com)",
       "WebFetch(domain:symbl.cc)",
       "Bash(node -e \":*)",
-      "mcp__Claude_Preview__preview_start"
+      "mcp__Claude_Preview__preview_start",
+      "Bash(where node:*)"
     ]
   }
 }
