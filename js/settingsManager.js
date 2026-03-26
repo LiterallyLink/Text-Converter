@@ -357,25 +357,8 @@ function applySettingsFromModal() {
     // Update output with new spacing and settings
     updateOutput(elements);
 
-    showNotification('Settings applied!', 'profileNotification');
+    showNotification(document.getElementById('profileNotification'), 'Settings applied!');
     closeSettingsModal();
-}
-
-/**
- * Shows a notification message
- * @param {string} message - Message to display
- * @param {string} notificationId - ID of the notification element
- */
-function showNotification(message, notificationId) {
-    const notification = document.getElementById(notificationId);
-    if (notification) {
-        notification.textContent = message;
-        notification.classList.add('show');
-
-        setTimeout(() => {
-            notification.classList.remove('show');
-        }, 2000);
-    }
 }
 
 /**
