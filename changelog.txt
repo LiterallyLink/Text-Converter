@@ -1,3 +1,18 @@
+Version 1.8.0 — March 26, 2026
+
+New:
+Discord-style formatting: _italic_ (single underscore), ***bold italic***, and ~~strikethrough~~ support
+Nested formatting combinations: __*underline italic*__, __**underline bold**__, __***underline bold italic***__
+Bold italic uses dedicated sans-serif bold italic Unicode font (𝙖𝙗𝙘)
+Strikethrough uses Unicode combining long stroke overlay (U+0336)
+
+Fixes:
+Import validation now sanitizes profile names (strips control characters, zero-width chars) and validates field types
+Imported profiles are stripped of unknown keys to prevent prototype pollution
+Text transformation pipeline now wrapped in try/catch — errors fall back to raw input instead of blank output
+
+---
+
 Version 1.7.0 — March 25, 2026
 
 New:

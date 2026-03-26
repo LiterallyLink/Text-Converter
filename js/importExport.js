@@ -6,6 +6,21 @@
 let importData = null;
 
 /**
+ * Sanitizes a profile name to prevent potential issues
+ * Strips control characters and limits length
+ * @param {string} name - Raw profile name
+ * @returns {string} Sanitized profile name
+ */
+function sanitizeProfileName(name) {
+    if (typeof name !== 'string') return '';
+    // Strip control characters and zero-width chars, trim, limit to 30 chars
+    return name
+        .replace(/[\x00-\x1F\x7F\u200B-\u200F\u2028-\u202F\uFEFF]/g, '')
+        .trim()
+        .slice(0, 30);
+}
+
+/**
  * Exports the currently selected profile
  * @param {Object} elements - DOM elements object
  */
@@ -112,21 +127,56 @@ function handleFileSelect(event) {
             let firstImportedProfile = null;
 
             // Import each valid profile
-            for (const [profileName, profile] of Object.entries(importData)) {
+            for (const [rawName, profile] of Object.entries(importData)) {
+                const profileName = sanitizeProfileName(rawName);
+                if (!profileName) {
+                    console.warn(`Skipping profile with invalid name: ${rawName}`);
+                    skippedCount++;
+                    continue;
+                }
+
                 if (typeof profile !== 'object' || !profile) {
                     console.warn(`Skipping invalid profile: ${profileName}`);
                     skippedCount++;
                     continue;
                 }
                 
-                // Basic validation of required fields
-                const requiredFields = ['firstLetterFont', 'commaStyle', 'exclamationStyle', 'questionStyle', 'spaceStyle', 'uppercaseWordStyle', 'symbolMode'];
-                const hasValidStructure = requiredFields.some(field => profile.hasOwnProperty(field));
-                
+                // Validate profile structure: must have at least some known fields
+                const knownStringFields = ['firstLetterFont', 'commaStyle', 'exclamationStyle', 'questionStyle', 'spaceStyle', 'uppercaseWordStyle', 'symbolMode', 'quoteStyle', 'customSymbols'];
+                const knownNumericFields = ['symbolFrequency', 'spacing', 'alignmentWidth'];
+                const knownBooleanFields = ['allowRepeatSymbols', 'textAlignment'];
+
+                const hasValidStructure = knownStringFields.some(field => profile.hasOwnProperty(field));
                 if (!hasValidStructure) {
                     console.warn(`Skipping profile with invalid structure: ${profileName}`);
                     skippedCount++;
                     continue;
+                }
+
+                // Sanitize individual field values to expected types
+                for (const field of knownStringFields) {
+                    if (profile.hasOwnProperty(field) && typeof profile[field] !== 'string') {
+                        profile[field] = '';
+                    }
+                }
+                for (const field of knownNumericFields) {
+                    if (profile.hasOwnProperty(field)) {
+                        const num = Number(profile[field]);
+                        profile[field] = isNaN(num) ? 0 : num;
+                    }
+                }
+                for (const field of knownBooleanFields) {
+                    if (profile.hasOwnProperty(field)) {
+                        profile[field] = Boolean(profile[field]);
+                    }
+                }
+
+                // Strip any unexpected keys to prevent prototype pollution
+                const allKnownFields = [...knownStringFields, ...knownNumericFields, ...knownBooleanFields];
+                for (const key of Object.keys(profile)) {
+                    if (!allKnownFields.includes(key)) {
+                        delete profile[key];
+                    }
                 }
 
                 // Check if we still have room
