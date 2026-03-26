@@ -18,31 +18,58 @@ const CONTROL_DEFINITIONS = [
         ]
     },
     {
-        id: 'commaStyle',
-        settingsId: 'settingsCommaStyle',
-        label: 'Comma Style',
-        mainLabel: 'Select Comma Style',
-        ariaLabel: 'Comma replacement style',
-        options: [
-            { value: '', text: 'Select Comma Style' },
-            { value: '、', text: '、' },
-            { value: '⸝⸝', text: '⸝⸝' },
-            { value: '◞', text: '◞' },
-            { value: '،،̲', text: '،،̲' },
-            { value: '⸝', text: '⸝' },
-        ]
-    },
-    {
-        id: 'punctuationStyle',
-        settingsId: 'settingsPunctuationStyle',
-        label: 'Punctuation Style',
-        mainLabel: 'Select Punctuation Style',
-        ariaLabel: 'Punctuation replacement style',
-        options: [
-            { value: '', text: 'Select Punctuation Style' },
-            { value: '\u2800ׅ⎖,\u2800ׅ𖤠', text: 'ׅ⎖ and\u2800ׅ𖤠' },
-            { value: '.ᐟ,.ᐣ', text: '.ᐟ and .ᐣ' },
-            { value: '₊ᐟ,₊ᐣ', text: '₊ᐟ and ₊ᐣ' },
+        type: 'group',
+        groupLabel: 'Punctuation Style',
+        controls: [
+            {
+                id: 'exclamationStyle',
+                settingsId: 'settingsExclamationStyle',
+                label: '!',
+                ariaLabel: 'Exclamation mark replacement style',
+                options: [
+                    { value: '', text: '!' },
+                    { value: '\u2800ׅ⎖', text: 'ׅ⎖' },
+                    { value: '.ᐟ', text: '.ᐟ' },
+                    { value: '₊ᐟ', text: '₊ᐟ' },
+                ]
+            },
+            {
+                id: 'questionStyle',
+                settingsId: 'settingsQuestionStyle',
+                label: '?',
+                ariaLabel: 'Question mark replacement style',
+                options: [
+                    { value: '', text: '?' },
+                    { value: '\u2800ׅ𖤠', text: 'ׅ𖤠' },
+                    { value: '.ᐣ', text: '.ᐣ' },
+                    { value: '₊ᐣ', text: '₊ᐣ' },
+                ]
+            },
+            {
+                id: 'commaStyle',
+                settingsId: 'settingsCommaStyle',
+                label: ',',
+                ariaLabel: 'Comma replacement style',
+                options: [
+                    { value: '', text: ',' },
+                    { value: '、', text: '、' },
+                    { value: '⸝⸝', text: '⸝⸝' },
+                    { value: '◞', text: '◞' },
+                    { value: '،،̲', text: '،،̲' },
+                    { value: '⸝', text: '⸝' },
+                ]
+            },
+            {
+                id: 'quoteStyle',
+                settingsId: 'settingsQuoteStyle',
+                label: '" "',
+                ariaLabel: 'Quotation mark replacement style',
+                options: [
+                    { value: '', text: '" "' },
+                    { value: '❛,❜', text: '❛ ❜' },
+                    { value: '❝,❞', text: '❝ ❞' },
+                ]
+            },
         ]
     },
     {
@@ -100,16 +127,34 @@ function renderControls(containerId, mode) {
 
     // Select controls
     for (const def of CONTROL_DEFINITIONS) {
-        const selectId = isSettings ? def.settingsId : def.id;
-        const labelText = isSettings ? def.label : def.mainLabel;
-        const forAttr = selectId;
+        if (def.type === 'group') {
+            // Render a grouped row of small inline selects
+            html += `<label>${def.groupLabel}</label>\n`;
+            html += `<div class="punctuation-row">\n`;
+            for (const ctrl of def.controls) {
+                const selectId = isSettings ? ctrl.settingsId : ctrl.id;
+                html += `    <div class="punctuation-row-item">\n`;
+                html += `        <label for="${selectId}">${ctrl.label}</label>\n`;
+                html += `        <select id="${selectId}" aria-label="${ctrl.ariaLabel}">\n`;
+                for (const opt of ctrl.options) {
+                    html += `            <option value="${escapeAttr(opt.value)}">${escapeHtml(opt.text)}</option>\n`;
+                }
+                html += `        </select>\n`;
+                html += `    </div>\n`;
+            }
+            html += `</div>\n\n`;
+        } else {
+            const selectId = isSettings ? def.settingsId : def.id;
+            const labelText = isSettings ? def.label : def.mainLabel;
+            const forAttr = selectId;
 
-        html += `<label for="${forAttr}">${labelText}</label>\n`;
-        html += `<select id="${selectId}" aria-label="${def.ariaLabel}">\n`;
-        for (const opt of def.options) {
-            html += `    <option value="${escapeAttr(opt.value)}">${escapeHtml(opt.text)}</option>\n`;
+            html += `<label for="${forAttr}">${labelText}</label>\n`;
+            html += `<select id="${selectId}" aria-label="${def.ariaLabel}">\n`;
+            for (const opt of def.options) {
+                html += `    <option value="${escapeAttr(opt.value)}">${escapeHtml(opt.text)}</option>\n`;
+            }
+            html += `</select>\n\n`;
         }
-        html += `</select>\n\n`;
     }
 
     // Symbol section

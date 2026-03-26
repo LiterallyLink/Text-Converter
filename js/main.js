@@ -12,8 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const elements = {
         inputText: document.getElementById('inputText'),
         firstLetterFont: document.getElementById('firstLetterFont'),
+        exclamationStyle: document.getElementById('exclamationStyle'),
+        questionStyle: document.getElementById('questionStyle'),
         commaStyle: document.getElementById('commaStyle'),
-        punctuationStyle: document.getElementById('punctuationStyle'),
+        quoteStyle: document.getElementById('quoteStyle'),
         spaceStyle: document.getElementById('spaceStyle'),
         symbolStyle: document.getElementById('symbolStyle'),
         uppercaseWordStyle: document.getElementById('uppercaseWordStyle'),
@@ -64,8 +66,10 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.inputText.addEventListener('input', () => updateOutput(elements));
     elements.firstLetterFont.addEventListener('change', () => updateOutput(elements));
     elements.uppercaseWordStyle.addEventListener('change', () => updateOutput(elements));
+    elements.exclamationStyle.addEventListener('change', () => updateOutput(elements));
+    elements.questionStyle.addEventListener('change', () => updateOutput(elements));
     elements.commaStyle.addEventListener('change', () => updateOutput(elements));
-    elements.punctuationStyle.addEventListener('change', () => updateOutput(elements));
+    elements.quoteStyle.addEventListener('change', () => updateOutput(elements));
     elements.spaceStyle.addEventListener('change', () => updateOutput(elements));
     elements.symbolFrequencySlider.addEventListener('input', () => updateOutput(elements));
     elements.symbolInput.addEventListener('input', () => updateOutput(elements));
