@@ -18,6 +18,23 @@ const CONTROL_DEFINITIONS = [
         ]
     },
     {
+        id: 'uppercaseWordStyle',
+        settingsId: 'settingsUppercaseWordStyle',
+        label: 'Uppercase Word Style',
+        mainLabel: 'Select Uppercase Word Style',
+        ariaLabel: 'Uppercase word style',
+        options: [
+            { value: '', text: 'Select Uppercase Word Style' },
+            { value: 'gothic', text: 'Gothic' },
+            { value: 'bold', text: 'Bold' },
+            { value: 'serif-bold', text: 'Serif Bold' },
+            { value: 'italic', text: 'Italic' },
+            { value: 'serif-bold-italic', text: 'Serif Bold Italic' },
+            { value: 'bold-italic', text: 'Bold Italic' },
+            { value: 'cryptic-italic', text: 'Cryptic Italic' },
+        ]
+    },
+    {
         type: 'group',
         groupLabel: 'Punctuation Style',
         controls: [
@@ -86,23 +103,6 @@ const CONTROL_DEFINITIONS = [
             { value: 'punctuation-space', text: 'Punctuation Space' },
             { value: 'em-quad', text: 'Em Quad Space' },
             { value: 'en-quad', text: 'En Quad Space' },
-        ]
-    },
-    {
-        id: 'uppercaseWordStyle',
-        settingsId: 'settingsUppercaseWordStyle',
-        label: 'Uppercase Word Style',
-        mainLabel: 'Select Uppercase Word Style',
-        ariaLabel: 'Uppercase word style',
-        options: [
-            { value: '', text: 'Select Uppercase Word Style' },
-            { value: 'gothic', text: 'Gothic' },
-            { value: 'bold', text: 'Bold' },
-            { value: 'serif-bold', text: 'Serif Bold' },
-            { value: 'italic', text: 'Italic' },
-            { value: 'serif-bold-italic', text: 'Serif Bold Italic' },
-            { value: 'bold-italic', text: 'Bold Italic' },
-            { value: 'cryptic-italic', text: 'Cryptic Italic' },
         ]
     },
 ];
