@@ -17,6 +17,7 @@ Imported profiles are stripped of unknown keys to prevent prototype pollution
 Text transformation pipeline now wrapped in try/catch — errors fall back to raw input instead of blank output
 Save notification not appearing on PC — duplicate function override was silently failing
 Settings slider not draggable on PC — base CSS padding was collapsing the input's hit area
+Quote style no longer replaces single quotes/apostrophes — prevents mangling words like don't and wouldn't
 
 ---
 
