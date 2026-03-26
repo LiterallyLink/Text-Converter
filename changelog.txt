@@ -1,3 +1,15 @@
+Version 1.7.0 — March 25, 2026
+
+New:
+Punctuation controls consolidated into a compact inline row with 4 independent dropdowns: exclamation marks, question marks, commas, and quotation marks
+Quotation mark style options: ❛ ❜ (heavy single) and ❝ ❞ (heavy double)
+Selected profile now remembered across page reloads
+
+Fixes:
+Spacing setting no longer resets to 0 on page reload — now persists to localStorage like other settings
+
+---
+
 Version 1.6.1 — March 19, 2026
 
 Fixes:
