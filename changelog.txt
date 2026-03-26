@@ -5,6 +5,9 @@ Punctuation controls consolidated into a compact inline row with 4 independent d
 Quotation mark style options: ❛ ❜ (heavy single) and ❝ ❞ (heavy double)
 Selected profile now remembered across page reloads
 
+Changes:
+Uppercase Word Style moved directly under First Letter Style in settings
+
 Fixes:
 Spacing setting no longer resets to 0 on page reload — now persists to localStorage like other settings
 
