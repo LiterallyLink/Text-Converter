@@ -4,31 +4,71 @@
  */
 
 /**
- * Applies markdown-like inline styles:
- *   __word__ → underline using Unicode combining low line (U+0332)
- *   **word** → bold using the selected uppercase word style
- *   *word*  → italic using ITALIC_FONTS
- * Processes underline first, then double asterisks, then single.
+ * Applies bold/italic formatting (asterisk-based and single-underscore italic).
+ * Called standalone for remaining text, and also for inner content of
+ * underline/strikethrough wrappers before combining characters are applied.
  * @param {string} text - Input text
  * @param {string} uppercaseStyle - Selected uppercase word style
- * @returns {string} Text with styled words
+ * @returns {string} Text with bold/italic styles applied
  */
-function applyMarkdownStyles(text, uppercaseStyle) {
-    // Process __underline__ first (before bold/italic)
-    text = text.replace(/__(.+?)__/g, (match, word) => {
-        return word.split('').map(char => char + '\u0332').join('');
+function applyBoldItalic(text, uppercaseStyle) {
+    // ***bold italic*** — must come before ** and *
+    text = text.replace(/\*\*\*(.+?)\*\*\*/g, (match, word) => {
+        return [...word].map(char => BOLD_ITALIC_FONTS[char] || char).join('');
     });
 
-    // Process **bold** next
+    // **bold**
     text = text.replace(/\*\*(.+?)\*\*/g, (match, word) => {
         if (!uppercaseStyle || !UPPERCASE_WORD_STYLES[uppercaseStyle]) return word;
         return UPPERCASE_WORD_STYLES[uppercaseStyle].transform(word);
     });
 
-    // Process *italic*
+    // *italic*
     text = text.replace(/\*(.+?)\*/g, (match, word) => {
-        return word.split('').map(char => ITALIC_FONTS[char] || char).join('');
+        return [...word].map(char => ITALIC_FONTS[char] || char).join('');
     });
+
+    // _italic_ (single underscore — must not match inside __ pairs, which are
+    // already consumed before this function is called)
+    text = text.replace(/_(.+?)_/g, (match, word) => {
+        return [...word].map(char => ITALIC_FONTS[char] || char).join('');
+    });
+
+    return text;
+}
+
+/**
+ * Applies Discord-style markdown inline formatting:
+ *   ~~text~~          → strikethrough (U+0336 combining long stroke overlay)
+ *   __text__          → underline (U+0332 combining low line)
+ *   __*text*__        → underline + italic
+ *   __**text**__      → underline + bold
+ *   __***text***__    → underline + bold italic
+ *   ***text***        → bold italic
+ *   **text**          → bold (uses selected uppercase word style)
+ *   *text* or _text_  → italic
+ *
+ * Underline and strikethrough process inner formatting first, then apply
+ * combining characters so that inner markers are not broken.
+ * @param {string} text - Input text
+ * @param {string} uppercaseStyle - Selected uppercase word style
+ * @returns {string} Text with styled words
+ */
+function applyMarkdownStyles(text, uppercaseStyle) {
+    // 1. ~~strikethrough~~ — apply inner bold/italic first, then combine
+    text = text.replace(/~~(.+?)~~/g, (match, content) => {
+        content = applyBoldItalic(content, uppercaseStyle);
+        return [...content].map(char => char + '\u0336').join('');
+    });
+
+    // 2. __underline__ — apply inner bold/italic first, then combine
+    text = text.replace(/__(.+?)__/g, (match, content) => {
+        content = applyBoldItalic(content, uppercaseStyle);
+        return [...content].map(char => char + '\u0332').join('');
+    });
+
+    // 3. Remaining bold/italic not inside underline/strikethrough
+    text = applyBoldItalic(text, uppercaseStyle);
 
     return text;
 }
@@ -232,63 +272,69 @@ function updateOutput(elements) {
         return;
     }
 
-    const originalText = processedText;
+    try {
+        const originalText = processedText;
 
-    // Apply text transformations in the correct order
-    processedText = applyMarkdownStyles(
-        processedText,
-        elements.uppercaseWordStyle.value
-    );
-    processedText = replaceUppercaseWords(
-        processedText,
-        elements.uppercaseWordStyle.value
-    );
-    processedText = replaceCommas(
-        processedText,
-        elements.commaStyle.value
-    );
-    processedText = replaceExclamations(
-        processedText,
-        elements.exclamationStyle.value
-    );
-    processedText = replaceQuestions(
-        processedText,
-        elements.questionStyle.value
-    );
-    processedText = replaceQuotes(
-        processedText,
-        elements.quoteStyle.value
-    );
-    // Add symbols before replacing spaces
-    processedText = addSymbols(processedText, elements);
-    // Replace spaces last to ensure consistent spacing
-    processedText = replaceSpaces(
-        processedText,
-        elements.spaceStyle.value
-    );
+        // Apply text transformations in the correct order
+        processedText = applyMarkdownStyles(
+            processedText,
+            elements.uppercaseWordStyle.value
+        );
+        processedText = replaceUppercaseWords(
+            processedText,
+            elements.uppercaseWordStyle.value
+        );
+        processedText = replaceCommas(
+            processedText,
+            elements.commaStyle.value
+        );
+        processedText = replaceExclamations(
+            processedText,
+            elements.exclamationStyle.value
+        );
+        processedText = replaceQuestions(
+            processedText,
+            elements.questionStyle.value
+        );
+        processedText = replaceQuotes(
+            processedText,
+            elements.quoteStyle.value
+        );
+        // Add symbols before replacing spaces
+        processedText = addSymbols(processedText, elements);
+        // Replace spaces last to ensure consistent spacing
+        processedText = replaceSpaces(
+            processedText,
+            elements.spaceStyle.value
+        );
 
-    // Apply text alignment (word wrap) before spacing
-    processedText = applyTextAlignment(processedText, elements);
+        // Apply text alignment (word wrap) before spacing
+        processedText = applyTextAlignment(processedText, elements);
 
-    // Apply first letter styling after alignment, paragraph starts only
-    // Pass original text so the lookup uses ASCII letters even if they've been styled
-    processedText = replaceFirstLetter(
-        processedText,
-        elements.firstLetterFont.value,
-        originalText
-    );
+        // Apply first letter styling after alignment, paragraph starts only
+        // Pass original text so the lookup uses ASCII letters even if they've been styled
+        processedText = replaceFirstLetter(
+            processedText,
+            elements.firstLetterFont.value,
+            originalText
+        );
 
-    // Apply spacing settings (newlines before and after)
-    processedText = applySpacing(processedText, elements);
+        // Apply spacing settings (newlines before and after)
+        processedText = applySpacing(processedText, elements);
 
-    elements.output.innerHTML = processedText;
+        elements.output.innerHTML = processedText;
+    } catch (error) {
+        console.error('Error processing text transformations:', error);
+        // Fall back to showing the raw input so the user isn't left with a blank output
+        elements.output.textContent = elements.inputText.value;
+    }
 }
 
 /**
- * Returns the visible length of a word, excluding formatting markers (* ** __)
+ * Returns the visible length of a word, excluding formatting markers (*** ** * __ ~~ _)
  */
 function visibleLength(word) {
-    return [...word.replace(/\*\*|__|\*/g, '')].length;
+    return [...word.replace(/\*\*\*|\*\*|~~|__|[*_]/g, '')].length;
 }
 
 /**
