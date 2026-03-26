@@ -1,35 +1,60 @@
 /**
  * Profile Manager
- * Handles saving, loading, and managing user profiles using cookies
+ * Handles saving, loading, and managing user profiles using localStorage
  */
 
 // Maximum number of allowed profiles
-const MAX_PROFILES = 5;
+const MAX_PROFILES = 8;
 
-// Cookie expiration (in days)
-const COOKIE_EXPIRATION_DAYS = 365;
+// localStorage key for profiles
+const PROFILES_STORAGE_KEY = 'textConverterProfiles';
 
 /**
- * Gets all saved profiles from cookies
+ * Migrates profiles from cookies to localStorage (one-time)
+ * Existing users who had profiles in cookies will have them moved over automatically
+ */
+function migrateProfilesFromCookies() {
+    // If localStorage already has profiles, skip migration
+    if (localStorage.getItem(PROFILES_STORAGE_KEY)) return;
+
+    // Check if there are profiles in the old cookie
+    const cookieData = getCookie('textConverterProfiles');
+    if (cookieData) {
+        try {
+            const profiles = JSON.parse(cookieData);
+            if (profiles && typeof profiles === 'object' && Object.keys(profiles).length > 0) {
+                localStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(profiles));
+                // Clear the old cookie
+                document.cookie = 'textConverterProfiles=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                console.log(`Migrated ${Object.keys(profiles).length} profile(s) from cookies to localStorage`);
+            }
+        } catch (e) {
+            console.error('Error migrating profiles from cookies:', e);
+        }
+    }
+}
+
+/**
+ * Gets all saved profiles from localStorage
  * @returns {Object} Object containing all saved profiles
  */
 function getProfiles() {
-    const profilesCookie = getCookie('textConverterProfiles');
     try {
-        return profilesCookie ? JSON.parse(profilesCookie) : {};
+        const data = localStorage.getItem(PROFILES_STORAGE_KEY);
+        return data ? JSON.parse(data) : {};
     } catch (e) {
-        console.error('Error parsing profiles cookie:', e);
+        console.error('Error reading profiles:', e);
         return {};
     }
 }
 
 /**
- * Saves all profiles to cookies
+ * Saves all profiles to localStorage
  * @param {Object} profiles - Object containing all profiles to save
  */
 function saveProfiles(profiles) {
     try {
-        setCookie('textConverterProfiles', JSON.stringify(profiles), COOKIE_EXPIRATION_DAYS);
+        localStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(profiles));
         return true;
     } catch (e) {
         console.error('Error saving profiles:', e);
@@ -278,7 +303,7 @@ function updateProfileSelect(selectElement, selectedProfile = null) {
     if (profileNames.length > 0 || selectedProfile) {
         const separator = document.createElement('option');
         separator.disabled = true;
-        separator.textContent = '━━━━━━━━━━━━━━━━━━';
+        separator.textContent = '━━━━━━━━━━';
         selectElement.appendChild(separator);
     }
     
@@ -388,26 +413,30 @@ function testCookieSupport() {
  * @param {Object} elements - DOM elements object
  */
 function initProfileManager(elements) {
-    // Check if cookies are supported
-    const cookiesSupported = testCookieSupport();
-    if (!cookiesSupported) {
-        // Show a notice about cookie limitations
-        const cookieWarning = document.createElement('div');
-        cookieWarning.className = 'notification';
-        cookieWarning.style.backgroundColor = '#f44336';
-        cookieWarning.textContent = 'Cookie storage not available. Profile saving won\'t work.';
-        cookieWarning.style.opacity = '1';
-        cookieWarning.style.visibility = 'visible';
-        document.body.appendChild(cookieWarning);
-        
+    // Migrate any profiles stored in cookies (one-time for existing users)
+    migrateProfilesFromCookies();
+
+    // Check if localStorage is available
+    try {
+        localStorage.setItem('storageTest', 'test');
+        localStorage.removeItem('storageTest');
+    } catch (e) {
+        const storageWarning = document.createElement('div');
+        storageWarning.className = 'notification';
+        storageWarning.style.backgroundColor = '#f44336';
+        storageWarning.textContent = 'Local storage not available. Profile saving won\'t work.';
+        storageWarning.style.opacity = '1';
+        storageWarning.style.visibility = 'visible';
+        document.body.appendChild(storageWarning);
+
         setTimeout(() => {
-            cookieWarning.style.opacity = '0';
+            storageWarning.style.opacity = '0';
             setTimeout(() => {
-                cookieWarning.remove();
+                storageWarning.remove();
             }, 1000);
         }, 5000);
     }
-    
+
     // Track the last selected profile - restore from localStorage if available
     const savedProfile = localStorage.getItem('lastSelectedProfile') || '';
     elements.lastSelectedProfile = savedProfile;

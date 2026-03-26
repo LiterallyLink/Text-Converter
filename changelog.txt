@@ -6,6 +6,11 @@ Nested formatting combinations: __*underline italic*__, __**underline bold**__, 
 Bold italic uses dedicated sans-serif bold italic Unicode font (𝙖𝙗𝙘)
 Strikethrough uses Unicode combining long stroke overlay (U+0336)
 
+Changes:
+Profile storage migrated from cookies to localStorage — existing profiles are automatically migrated
+Profile limit increased from 5 to 8
+Profile dropdown separator shortened to fix mobile wrapping issue
+
 Fixes:
 Import validation now sanitizes profile names (strips control characters, zero-width chars) and validates field types
 Imported profiles are stripped of unknown keys to prevent prototype pollution
