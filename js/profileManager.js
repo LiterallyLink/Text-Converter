@@ -326,6 +326,12 @@ function updateProfileSelect(selectElement, selectedProfile = null) {
 }
 
 /**
+ * Active timeout ID for the notification, so repeated calls
+ * don't cause the previous timer to steal the .show class.
+ */
+let notificationTimeout = null;
+
+/**
  * Shows a notification
  * @param {HTMLElement} notificationElement - The notification element
  * @param {string} message - Optional message to display
@@ -334,11 +340,17 @@ function showNotification(notificationElement, message = null) {
     if (message) {
         notificationElement.textContent = message;
     }
-    
+
+    // Cancel any pending hide so it doesn't steal our .show class
+    if (notificationTimeout) {
+        clearTimeout(notificationTimeout);
+    }
+
     notificationElement.classList.add('show');
-    
-    setTimeout(() => {
+
+    notificationTimeout = setTimeout(() => {
         notificationElement.classList.remove('show');
+        notificationTimeout = null;
     }, 2000);
 }
 

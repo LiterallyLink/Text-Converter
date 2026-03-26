@@ -13,6 +13,13 @@ input, select, textarea {
     color: var(--text-color);
 }
 
+/* Range inputs need their own sizing — base padding breaks the thumb */
+input[type="range"] {
+    padding: 0;
+    height: auto;
+    border: none;
+}
+
 input:focus, select:focus, textarea:focus {
     outline: none;
     border-color: var(--accent-color);
@@ -156,7 +163,7 @@ select {
 /* Notification */
 .notification {
     position: fixed;
-    bottom: 20px;
+    top: 20px;
     left: 50%;
     transform: translateX(-50%);
     background-color: var(--accent-color);
