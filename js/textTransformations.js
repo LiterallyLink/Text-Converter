@@ -167,10 +167,6 @@ function replaceQuotes(text, quoteStyle) {
     text = text.replace(/\u201C(.*?)\u201D/g, `${open}$1${close}`);
     text = text.replace(/"(.*?)"/g, `${open}$1${close}`);
 
-    // Replace single quotes (both straight and curly)
-    text = text.replace(/\u2018(.*?)\u2019/g, `${open}$1${close}`);
-    text = text.replace(/'(.*?)'/g, `${open}$1${close}`);
-
     return text;
 }
 
