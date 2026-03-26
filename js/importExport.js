@@ -120,7 +120,7 @@ function handleFileSelect(event) {
                 }
                 
                 // Basic validation of required fields
-                const requiredFields = ['firstLetterFont', 'commaStyle', 'punctuationStyle', 'spaceStyle', 'uppercaseWordStyle', 'symbolMode'];
+                const requiredFields = ['firstLetterFont', 'commaStyle', 'exclamationStyle', 'questionStyle', 'spaceStyle', 'uppercaseWordStyle', 'symbolMode'];
                 const hasValidStructure = requiredFields.some(field => profile.hasOwnProperty(field));
                 
                 if (!hasValidStructure) {

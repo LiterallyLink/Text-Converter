@@ -53,6 +53,23 @@ function setAlignmentWidthPreference(width) {
 }
 
 /**
+ * Gets the output spacing preference from localStorage
+ * @returns {number} The spacing value (default 0)
+ */
+function getSpacingPreference() {
+    const val = localStorage.getItem('outputSpacing');
+    return val !== null ? parseInt(val) : 0;
+}
+
+/**
+ * Sets the output spacing preference in localStorage
+ * @param {number} spacing - The spacing value
+ */
+function setSpacingPreference(spacing) {
+    localStorage.setItem('outputSpacing', spacing.toString());
+}
+
+/**
  * Updates the alignment preview with wrapped lorem ipsum text
  * @param {number} maxWidth - The max line width
  */
@@ -106,6 +123,18 @@ function applyTextAlignmentPreference() {
     if (valueLabel) valueLabel.textContent = width;
     if (container) container.style.display = enabled ? 'block' : 'none';
     if (enabled) updateAlignmentPreview(width);
+}
+
+/**
+ * Applies the spacing preference from localStorage on page load
+ */
+function applySpacingPreference() {
+    const spacing = getSpacingPreference();
+    const hiddenInput = document.getElementById('outputSpacing');
+    const settingsSelect = document.getElementById('settingsOutputSpacing');
+
+    if (hiddenInput) hiddenInput.value = spacing;
+    if (settingsSelect) settingsSelect.value = spacing;
 }
 
 /**
@@ -216,8 +245,10 @@ function loadSettingsIntoModal() {
 
     // Load all transformation settings
     document.getElementById('settingsFirstLetterFont').value = elements.firstLetterFont.value;
+    document.getElementById('settingsExclamationStyle').value = elements.exclamationStyle.value;
+    document.getElementById('settingsQuestionStyle').value = elements.questionStyle.value;
     document.getElementById('settingsCommaStyle').value = elements.commaStyle.value;
-    document.getElementById('settingsPunctuationStyle').value = elements.punctuationStyle.value;
+    document.getElementById('settingsQuoteStyle').value = elements.quoteStyle.value;
     document.getElementById('settingsSpaceStyle').value = elements.spaceStyle.value;
     document.getElementById('settingsUppercaseWordStyle').value = elements.uppercaseWordStyle.value;
 
@@ -283,14 +314,17 @@ function applySettingsFromModal() {
 
     // Apply spacing
     const spacing = parseInt(document.getElementById('settingsOutputSpacing').value) || 0;
+    setSpacingPreference(spacing);
     if (elements.outputSpacing) {
         elements.outputSpacing.value = spacing;
     }
 
     // Apply all transformation settings
     elements.firstLetterFont.value = document.getElementById('settingsFirstLetterFont').value;
+    elements.exclamationStyle.value = document.getElementById('settingsExclamationStyle').value;
+    elements.questionStyle.value = document.getElementById('settingsQuestionStyle').value;
     elements.commaStyle.value = document.getElementById('settingsCommaStyle').value;
-    elements.punctuationStyle.value = document.getElementById('settingsPunctuationStyle').value;
+    elements.quoteStyle.value = document.getElementById('settingsQuoteStyle').value;
     elements.spaceStyle.value = document.getElementById('settingsSpaceStyle').value;
     elements.uppercaseWordStyle.value = document.getElementById('settingsUppercaseWordStyle').value;
 
@@ -351,6 +385,7 @@ function initSettingsModal() {
     // Apply preferences on page load
     applyLayoutPreference();
     applyTextAlignmentPreference();
+    applySpacingPreference();
 
     // Settings profile selector change event
     const settingsProfileSelect = document.getElementById('settingsProfileSelect');

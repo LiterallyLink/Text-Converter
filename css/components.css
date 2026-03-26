@@ -717,6 +717,31 @@ body.modal-open {
     font-size: 1em;
 }
 
+.punctuation-row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.punctuation-row-item {
+    flex: 1;
+    min-width: 0;
+}
+
+.punctuation-row-item label {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.85em;
+    text-align: center;
+    font-weight: 500;
+}
+
+.punctuation-row-item select {
+    width: 100%;
+    padding: 8px 4px;
+    font-size: 0.9em;
+}
+
 .spacing-controls {
     display: flex;
     flex-direction: column;

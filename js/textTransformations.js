@@ -90,18 +90,48 @@ function replaceCommas(text, commaStyle) {
 }
 
 /**
- * Replaces punctuation with selected style
+ * Replaces exclamation marks with selected style
  * @param {string} text - Input text
- * @param {string} punctuationStyle - Selected punctuation style
- * @returns {string} Text with replaced punctuation
+ * @param {string} exclamationStyle - Selected exclamation style
+ * @returns {string} Text with replaced exclamation marks
  */
-function replacePunctuation(text, punctuationStyle) {
-    if (!punctuationStyle) return text;
+function replaceExclamations(text, exclamationStyle) {
+    if (!exclamationStyle) return text;
+    return text.replace(/!/g, exclamationStyle);
+}
 
-    const [exclamationStyle, questionStyle] = punctuationStyle.split(',');
-    return text
-        .replace(/!/g, exclamationStyle)
-        .replace(/\?/g, questionStyle);
+/**
+ * Replaces question marks with selected style
+ * @param {string} text - Input text
+ * @param {string} questionStyle - Selected question mark style
+ * @returns {string} Text with replaced question marks
+ */
+function replaceQuestions(text, questionStyle) {
+    if (!questionStyle) return text;
+    return text.replace(/\?/g, questionStyle);
+}
+
+/**
+ * Replaces quotation marks with selected style
+ * Value format: "open,close" — replaces both single and double quotes
+ * @param {string} text - Input text
+ * @param {string} quoteStyle - Selected quote style
+ * @returns {string} Text with replaced quotation marks
+ */
+function replaceQuotes(text, quoteStyle) {
+    if (!quoteStyle) return text;
+
+    const [open, close] = quoteStyle.split(',');
+
+    // Replace double quotes (both straight and curly)
+    text = text.replace(/\u201C(.*?)\u201D/g, `${open}$1${close}`);
+    text = text.replace(/"(.*?)"/g, `${open}$1${close}`);
+
+    // Replace single quotes (both straight and curly)
+    text = text.replace(/\u2018(.*?)\u2019/g, `${open}$1${close}`);
+    text = text.replace(/'(.*?)'/g, `${open}$1${close}`);
+
+    return text;
 }
 
 /**
@@ -217,9 +247,17 @@ function updateOutput(elements) {
         processedText,
         elements.commaStyle.value
     );
-    processedText = replacePunctuation(
+    processedText = replaceExclamations(
         processedText,
-        elements.punctuationStyle.value
+        elements.exclamationStyle.value
+    );
+    processedText = replaceQuestions(
+        processedText,
+        elements.questionStyle.value
+    );
+    processedText = replaceQuotes(
+        processedText,
+        elements.quoteStyle.value
     );
     // Add symbols before replacing spaces
     processedText = addSymbols(processedText, elements);

@@ -51,8 +51,10 @@ function getCurrentSettings(elements) {
 
     return {
         firstLetterFont: elements.firstLetterFont.value,
+        exclamationStyle: elements.exclamationStyle.value,
+        questionStyle: elements.questionStyle.value,
         commaStyle: elements.commaStyle.value,
-        punctuationStyle: elements.punctuationStyle.value,
+        quoteStyle: elements.quoteStyle.value,
         spaceStyle: elements.spaceStyle.value,
         uppercaseWordStyle: elements.uppercaseWordStyle.value,
         symbolMode: symbolMode,
@@ -79,8 +81,10 @@ function applySettings(settings, elements) {
 
     // Apply basic select values (use empty string as default)
     elements.firstLetterFont.value = settings.firstLetterFont || '';
+    elements.exclamationStyle.value = settings.exclamationStyle || '';
+    elements.questionStyle.value = settings.questionStyle || '';
     elements.commaStyle.value = settings.commaStyle || '';
-    elements.punctuationStyle.value = settings.punctuationStyle || '';
+    elements.quoteStyle.value = settings.quoteStyle || '';
     elements.spaceStyle.value = settings.spaceStyle || '';
     elements.uppercaseWordStyle.value = settings.uppercaseWordStyle || '';
 
@@ -98,8 +102,10 @@ function applySettings(settings, elements) {
     elements.symbolInput.value = settings.customSymbols || '';
 
     // Apply spacing settings (default to 0)
+    const spacingVal = settings.spacing !== undefined ? settings.spacing : 0;
+    setSpacingPreference(spacingVal);
     if (elements.outputSpacing) {
-        elements.outputSpacing.value = settings.spacing !== undefined ? settings.spacing : 0;
+        elements.outputSpacing.value = spacingVal;
     }
 
     // Apply text alignment setting
@@ -127,8 +133,10 @@ function applySettings(settings, elements) {
 function resetToDefaults(elements) {
     // Reset all selects to empty string (first option)
     elements.firstLetterFont.value = '';
+    elements.exclamationStyle.value = '';
+    elements.questionStyle.value = '';
     elements.commaStyle.value = '';
-    elements.punctuationStyle.value = '';
+    elements.quoteStyle.value = '';
     elements.spaceStyle.value = '';
     elements.uppercaseWordStyle.value = '';
 
@@ -213,6 +221,7 @@ function deleteProfile(profileName, elements) {
             // Reset the last selected profile if it was the deleted one
             if (elements.lastSelectedProfile === profileName) {
                 elements.lastSelectedProfile = '';
+                localStorage.setItem('lastSelectedProfile', '');
             }
             updateProfileSelect(elements.profileSelect);
             return true;
@@ -399,9 +408,10 @@ function initProfileManager(elements) {
         }, 5000);
     }
     
-    // Track the last selected profile
-    elements.lastSelectedProfile = '';
-    
+    // Track the last selected profile - restore from localStorage if available
+    const savedProfile = localStorage.getItem('lastSelectedProfile') || '';
+    elements.lastSelectedProfile = savedProfile;
+
     // Add profile dialog elements
     const profileDialog = document.createElement('div');
     profileDialog.id = 'profileDialog';
@@ -432,7 +442,20 @@ function initProfileManager(elements) {
     
     // Initialize profile select
     updateProfileSelect(elements.profileSelect);
-    
+
+    // Restore previously selected profile on page load
+    if (savedProfile) {
+        const profiles = getProfiles();
+        if (profiles[savedProfile]) {
+            elements.profileSelect.value = savedProfile;
+            loadProfile(savedProfile, elements);
+        } else {
+            // Profile was deleted or doesn't exist anymore - reset
+            elements.lastSelectedProfile = '';
+            localStorage.setItem('lastSelectedProfile', '');
+        }
+    }
+
     // Profile select change event with improved mobile handling and import/export
     elements.profileSelect.addEventListener('change', function(e) {
         e.preventDefault();
@@ -470,11 +493,13 @@ function initProfileManager(elements) {
         } else if (selectedValue) {
             // Load the selected profile
             elements.lastSelectedProfile = selectedValue;
+            localStorage.setItem('lastSelectedProfile', selectedValue);
             loadProfile(selectedValue, elements);
-            
+
         } else {
             // Reset to default settings if "Default Profile" is selected
             elements.lastSelectedProfile = '';
+            localStorage.setItem('lastSelectedProfile', '');
             resetToDefaultSettings(elements);
         }
     });
@@ -521,6 +546,7 @@ function initProfileManager(elements) {
                 showNotification(elements.profileNotification, 'Profile created!');
                 // Select the newly created profile
                 elements.lastSelectedProfile = profileName;
+                localStorage.setItem('lastSelectedProfile', profileName);
                 updateProfileSelect(elements.profileSelect, profileName);
             }
         } else {
@@ -563,8 +589,10 @@ function initProfileManager(elements) {
 function resetToDefaultSettings(elements) {
     // Reset all select elements
     elements.firstLetterFont.value = '';
+    elements.exclamationStyle.value = '';
+    elements.questionStyle.value = '';
     elements.commaStyle.value = '';
-    elements.punctuationStyle.value = '';
+    elements.quoteStyle.value = '';
     elements.spaceStyle.value = '';
     elements.uppercaseWordStyle.value = '';
 
