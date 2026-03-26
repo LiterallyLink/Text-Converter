@@ -76,6 +76,12 @@
         flex-direction: column;
         gap: 5px;
     }
+
+    .profile-controls select {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
     
     .profile-button {
         width: 100%;
