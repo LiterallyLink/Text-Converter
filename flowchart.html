@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Converter — How It Works</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #1a1a2e;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            color: #fff;
+        }
+        .subtitle {
+            color: #8888aa;
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+        }
+        #diagram {
+            width: 100%;
+            max-width: 1200px;
+        }
+        #diagram svg {
+            max-width: 100%;
+            height: auto;
+        }
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.85rem;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .legend-swatch {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+    </style>
+</head>
+<body>
+    <h1>Text Converter — How It Works</h1>
+    <p class="subtitle">Visual overview of the text transformation pipeline</p>
+
+    <div class="legend">
+        <div class="legend-item"><div class="legend-swatch" style="background:#4a9eff"></div> Input / Output</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#ff6b6b"></div> Protection Layer</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#ffa94d"></div> Text Styling</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#69db7c"></div> Punctuation</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#da77f2"></div> Symbols &amp; Spacing</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#38d9a9"></div> Layout &amp; Finishing</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#748ffc"></div> Supporting Systems</div>
+    </div>
+
+    <div id="diagram"></div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: 'dark',
+            flowchart: {
+                curve: 'basis',
+                padding: 16,
+                nodeSpacing: 30,
+                rankSpacing: 45,
+                useMaxWidth: true,
+                htmlLabels: true
+            },
+            themeVariables: {
+                darkMode: true,
+                background: '#1a1a2e',
+                primaryColor: '#4a9eff',
+                lineColor: '#555577',
+                fontFamily: 'Segoe UI, system-ui, sans-serif',
+                fontSize: '14px'
+            }
+        });
+
+        const definition = `flowchart TD
+    INPUT(["User types text"]):::io
+    EVENT{"updateOutput() triggered<br/>on every input/change event"}:::io
+    EXTRACT["Extract No-Format Zones<br/>Backtick regions to placeholders"]:::protect
+
+    MD["Markdown Styles<br/>bold italic, bold, italic<br/>underline, strikethrough"]:::styling
+    UC["Uppercase Word Styling<br/>Gothic, Bold, Serif Bold<br/>Italic, Double-struck, etc."]:::styling
+    NUM["Number Formatting<br/>Bold, Sans-serif Bold<br/>Double-struck, Monospace"]:::styling
+
+    COMMA["Replace Commas<br/>Unicode comma variants"]:::punct
+    EXCL["Replace Exclamations<br/>Unicode exclamation variants"]:::punct
+    QUEST["Replace Questions<br/>Unicode question variants"]:::punct
+    QUOTE["Replace Quotes<br/>Unicode quotation variants"]:::punct
+
+    SYM["Add Symbols<br/>Inject at set frequency<br/>from picker or custom input"]:::symbol
+    SPACE["Replace Spaces<br/>Thin, Hair, Em-quad<br/>En-space, etc."]:::symbol
+
+    ALIGN["Text Alignment<br/>Min-raggedness word wrap<br/>at configurable line width"]:::layout
+    FIRST["First Letter Styling<br/>Cursive, Gothic, or Bold<br/>per paragraph start"]:::layout
+    SPACING["Output Spacing<br/>Add newlines before/after text"]:::layout
+
+    RESTORE["Restore No-Format Zones<br/>Placeholders back to original"]:::protect
+    OUTPUT(["Rendered Output<br/>displayed in output area"]):::io
+
+    PROFILES["Profile Manager<br/>Save/load up to 8 profiles<br/>Import and export as JSON"]:::support
+    SETTINGS["Settings Modal<br/>Layout preferences<br/>Control visibility"]:::support
+    THEME["Theme Toggle<br/>Dark/Light mode<br/>persisted in localStorage"]:::support
+
+    INPUT --> EVENT
+    EVENT --> EXTRACT
+    EXTRACT --> MD --> UC --> NUM
+    NUM --> COMMA --> EXCL --> QUEST --> QUOTE
+    QUOTE --> SYM --> SPACE
+    SPACE --> ALIGN --> FIRST --> SPACING
+    SPACING --> RESTORE --> OUTPUT
+
+    PROFILES -. "loads saved control values" .-> EVENT
+    SETTINGS -. "configures controls" .-> EVENT
+    THEME -. "styles UI only" .-> OUTPUT
+
+    classDef io fill:#4a9eff,stroke:#2b7de9,color:#fff,font-weight:bold
+    classDef protect fill:#ff6b6b,stroke:#e05555,color:#fff,font-weight:bold
+    classDef styling fill:#ffa94d,stroke:#e08e30,color:#1a1a2e,font-weight:bold
+    classDef punct fill:#69db7c,stroke:#4fc466,color:#1a1a2e,font-weight:bold
+    classDef symbol fill:#da77f2,stroke:#c05edb,color:#1a1a2e,font-weight:bold
+    classDef layout fill:#38d9a9,stroke:#2bb88a,color:#1a1a2e,font-weight:bold
+    classDef support fill:#748ffc,stroke:#5b78e0,color:#fff,font-weight:bold`;
+
+        mermaid.render('mermaidDiagram', definition).then(({ svg }) => {
+            document.getElementById('diagram').innerHTML = svg;
+        }).catch(err => {
+            document.getElementById('diagram').textContent = 'Error: ' + err.message;
+        });
+    </script>
+</body>
+</html>

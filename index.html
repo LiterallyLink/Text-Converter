@@ -65,12 +65,25 @@
         
         <section>
             <label for="inputText" class="sr-only">Enter your text</label>
-            <textarea
-                id="inputText"
-                placeholder="Enter your text here..."
-                aria-describedby="textInstructions"
-                rows="3"
-            ></textarea>
+            <div class="input-container">
+                <textarea
+                    id="inputText"
+                    placeholder="Enter your text here..."
+                    aria-describedby="textInstructions"
+                    rows="3"
+                ></textarea>
+                <div class="input-actions">
+                    <button id="undoButton" class="input-action-button" aria-label="Undo" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="action-icon"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                    </button>
+                    <button id="redoButton" class="input-action-button" aria-label="Redo" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="action-icon"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.13-9.36L23 10"></path></svg>
+                    </button>
+                    <button id="clearButton" class="input-action-button" aria-label="Clear all">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="action-icon"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </button>
+                </div>
+            </div>
             <p id="textInstructions" class="sr-only">
                 Type text to see it styled with special first letter and comma options
             </p>
@@ -106,6 +119,7 @@
                     </svg>
                 </button>
             </div>
+            <div id="charCount" class="char-count"></div>
         </section>
         <div class="notification" id="copyNotification">Copied to Clipboard!</div>
         <div class="notification" id="profileNotification">Profile saved!</div>

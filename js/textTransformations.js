@@ -3,6 +3,54 @@
  * Contains all functions that manipulate and transform text
  */
 
+// ── Input History (Undo / Redo) ──
+const inputHistory = [''];
+let historyIndex = 0;
+let isUndoRedoing = false;
+
+function pushHistory(value) {
+    if (isUndoRedoing) return;
+    if (inputHistory[historyIndex] === value) return;
+    // Truncate any forward history
+    inputHistory.splice(historyIndex + 1);
+    inputHistory.push(value);
+    // Cap at 50 entries
+    if (inputHistory.length > 50) {
+        inputHistory.shift();
+    }
+    historyIndex = inputHistory.length - 1;
+}
+
+function undoInput(elements) {
+    if (historyIndex <= 0) return;
+    historyIndex--;
+    isUndoRedoing = true;
+    elements.inputText.value = inputHistory[historyIndex];
+    updateOutput(elements);
+    isUndoRedoing = false;
+    updateHistoryButtons(elements);
+}
+
+function redoInput(elements) {
+    if (historyIndex >= inputHistory.length - 1) return;
+    historyIndex++;
+    isUndoRedoing = true;
+    elements.inputText.value = inputHistory[historyIndex];
+    updateOutput(elements);
+    isUndoRedoing = false;
+    updateHistoryButtons(elements);
+}
+
+function clearInput(elements) {
+    elements.inputText.value = '';
+    elements.inputText.dispatchEvent(new Event('input'));
+}
+
+function updateHistoryButtons(elements) {
+    if (elements.undoButton) elements.undoButton.disabled = historyIndex <= 0;
+    if (elements.redoButton) elements.redoButton.disabled = historyIndex >= inputHistory.length - 1;
+}
+
 /**
  * Replaces backtick-quoted regions with unique placeholders so they are
  * immune to every downstream transformation.
@@ -338,8 +386,11 @@ function addSymbols(text, elements) {
  */
 function updateOutput(elements) {
     let processedText = elements.inputText.value;
+    pushHistory(processedText);
+    updateHistoryButtons(elements);
     if (!processedText) {
         elements.output.innerHTML = '';
+        if (elements.charCount) elements.charCount.textContent = '';
         return;
     }
 
@@ -405,6 +456,10 @@ function updateOutput(elements) {
         processedText = restoreNoFormatZones(processedText, zones);
 
         elements.output.innerHTML = processedText;
+        if (elements.charCount) {
+            const len = [...elements.output.textContent].length;
+            elements.charCount.textContent = len + ' Character' + (len !== 1 ? 's' : '');
+        }
     } catch (error) {
         console.error('Error processing text transformations:', error);
         // Fall back to showing the raw input so the user isn't left with a blank output
