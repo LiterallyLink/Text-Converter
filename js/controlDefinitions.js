@@ -123,7 +123,7 @@ const CONTROL_DEFINITIONS = [
 
 const SYMBOL_BUTTONS = [
     { id: 'symbolButton1', settingsId: 'settingsSymbolButton1', text: 'None', defaultActive: true },
-    { id: 'symbolButton2', settingsId: 'settingsSymbolButton2', text: 'Random', defaultActive: false },
+    { id: 'symbolButton2', settingsId: 'settingsSymbolButton2', text: 'Pick', defaultActive: false },
     { id: 'symbolButton3', settingsId: 'settingsSymbolButton3', text: 'Custom', defaultActive: false },
 ];
 
@@ -180,11 +180,11 @@ function renderControls(containerId, mode) {
     const typeAttr = isSettings ? ' type="button"' : '';
     const controlsDisplay = isSettings ? ' style="display: none;"' : '';
 
+    const pickerWrapperId = isSettings ? 'settingsSymbolPickerWrapper' : 'symbolPickerWrapper';
+    const pickerId = isSettings ? 'settingsSymbolPicker' : 'symbolPicker';
+
     html += `<div class="${sectionClass}">\n`;
-    html += `    <label class="symbol-label">\n`;
-    html += `        Symbol Style\n`;
-    html += `        <span class="experimental-tag" title="This feature is experimental and may be changed in the future.">Experimental</span>\n`;
-    html += `    </label>\n`;
+    html += `    <label class="symbol-label">Symbol Style</label>\n`;
     html += `    <div class="symbol-buttons">\n`;
     for (const btn of SYMBOL_BUTTONS) {
         const btnId = isSettings ? btn.settingsId : btn.id;
@@ -210,6 +210,23 @@ function renderControls(containerId, mode) {
     html += `                <span class="checkmark"></span>\n`;
     html += `                Allow Repeat Symbols\n`;
     html += `            </label>\n`;
+    html += `        </div>\n`;
+    // Symbol picker grid — shown in Pick mode, hidden in Custom mode
+    html += `        <div id="${pickerWrapperId}" class="symbol-picker-wrapper" style="display: none;">\n`;
+    html += `            <div class="symbol-picker-header">\n`;
+    html += `                <span class="symbol-picker-label">Symbols</span>\n`;
+    html += `                <div class="symbol-picker-controls">\n`;
+    html += `                    <button type="button" class="symbol-picker-toggle" data-picker="${pickerId}" data-action="all">All</button>\n`;
+    html += `                    <button type="button" class="symbol-picker-toggle" data-picker="${pickerId}" data-action="none">None</button>\n`;
+    html += `                </div>\n`;
+    html += `            </div>\n`;
+    html += `            <div id="${pickerId}" class="symbol-picker">\n`;
+    for (let i = 0; i < RANDOM_SYMBOLS.length; i++) {
+        const symDisplay = escapeHtml(RANDOM_SYMBOLS[i]);
+        const symTitle = escapeAttr(RANDOM_SYMBOLS[i]);
+        html += `                <button type="button" class="symbol-picker-btn active" data-index="${i}" title="${symTitle}">${symDisplay}</button>\n`;
+    }
+    html += `            </div>\n`;
     html += `        </div>\n`;
     html += `        <input type="text" id="${inputId}" placeholder="Enter custom symbols...">\n`;
     html += `    </div>\n`;

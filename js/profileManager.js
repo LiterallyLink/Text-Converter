@@ -87,6 +87,11 @@ function getCurrentSettings(elements) {
         symbolFrequency: elements.symbolFrequencySlider.value,
         allowRepeatSymbols: elements.allowRepeatSymbols.checked,
         customSymbols: elements.symbolInput.value,
+        enabledSymbols: (() => {
+            const picker = document.getElementById('symbolPicker');
+            if (!picker) return null;
+            return [...picker.querySelectorAll('.symbol-picker-btn')].map(btn => btn.classList.contains('active'));
+        })(),
         spacing: spacing,
         textAlignment: elements.textAlignment ? elements.textAlignment.value === 'true' : false,
         alignmentWidth: elements.alignmentWidth ? parseInt(elements.alignmentWidth.value) || 35 : 35
@@ -127,6 +132,17 @@ function applySettings(settings, elements) {
     elements.symbolFrequencySlider.value = settings.symbolFrequency || '50';
     elements.allowRepeatSymbols.checked = settings.allowRepeatSymbols !== undefined ? settings.allowRepeatSymbols : true;
     elements.symbolInput.value = settings.customSymbols || '';
+
+    // Restore which symbols are enabled in the picker
+    if (Array.isArray(settings.enabledSymbols)) {
+        const picker = document.getElementById('symbolPicker');
+        if (picker) {
+            const btns = [...picker.querySelectorAll('.symbol-picker-btn')];
+            btns.forEach((btn, i) => {
+                btn.classList.toggle('active', settings.enabledSymbols[i] !== false);
+            });
+        }
+    }
 
     // Apply spacing settings (default to 0)
     const spacingVal = settings.spacing !== undefined ? settings.spacing : 0;
@@ -179,6 +195,12 @@ function resetToDefaults(elements) {
     elements.symbolFrequencySlider.value = '50';
     elements.allowRepeatSymbols.checked = true;
     elements.symbolInput.value = '';
+
+    // Reset symbol picker — re-enable all symbols
+    const pickerOnReset = document.getElementById('symbolPicker');
+    if (pickerOnReset) {
+        pickerOnReset.querySelectorAll('.symbol-picker-btn').forEach(btn => btn.classList.add('active'));
+    }
 
     // Reset spacing
     if (elements.outputSpacing) {
@@ -649,6 +671,12 @@ function resetToDefaultSettings(elements) {
     elements.symbolFrequencySlider.value = 50;
     elements.allowRepeatSymbols.checked = true;
     elements.symbolInput.value = '';
+
+    // Reset symbol picker — re-enable all symbols
+    const pickerOnDefault = document.getElementById('symbolPicker');
+    if (pickerOnDefault) {
+        pickerOnDefault.querySelectorAll('.symbol-picker-btn').forEach(btn => btn.classList.add('active'));
+    }
 
     // Reset spacing to 0
     if (elements.outputSpacing) {

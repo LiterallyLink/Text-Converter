@@ -53,7 +53,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize theme
     loadTheme(elements);
-    
+
+    // Initialize symbol picker (main page — triggers live output update on toggle)
+    initSymbolPicker('symbolPicker', () => updateOutput(elements));
+
     // Initialize profile manager
     initProfileManager(elements);
 

@@ -518,23 +518,88 @@ select {
     opacity: 0.8;
 }
 
-/* Experimental tag styles */
-.experimental-tag {
-    font-size: 0.7em;
-    background-color: var(--accent-color);
-    color: white;
-    padding: 2px 6px;
-    border-radius: 4px;
-    margin-left: 8px;
-    font-weight: normal;
-    vertical-align: middle;
-    cursor: help;
-    opacity: 0.9;
-    transition: opacity 0.2s ease;
+/* Symbol Picker */
+.symbol-picker-wrapper {
+    margin-top: 12px;
 }
 
-.experimental-tag:hover {
+.symbol-picker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.symbol-picker-label {
+    font-size: 0.9em;
+    font-weight: 500;
+    color: var(--text-color);
+    opacity: 0.85;
+}
+
+.symbol-picker-controls {
+    display: flex;
+    gap: 5px;
+}
+
+.symbol-picker-toggle {
+    font-size: 0.75rem;
+    padding: 3px 10px;
+    background: transparent;
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease;
+    line-height: 1.4;
+}
+
+.symbol-picker-toggle:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+.symbol-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding: 8px;
+    background-color: var(--output-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 6px;
+    max-height: 160px;
+    overflow-y: auto;
+}
+
+.symbol-picker-btn {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    background: transparent;
+    color: var(--text-color);
+    cursor: pointer;
+    font-size: 1em;
+    padding: 0;
+    opacity: 0.25;
+    transition: opacity 0.15s ease, border-color 0.15s ease;
+}
+
+.symbol-picker-btn.active {
     opacity: 1;
+    border-color: var(--accent-color);
+}
+
+.symbol-picker-btn:not(.active):hover {
+    opacity: 0.6;
+    border-color: var(--input-border);
+}
+
+.symbol-picker-btn.active:hover {
+    opacity: 0.75;
 }
 
 /* Modal Styles */

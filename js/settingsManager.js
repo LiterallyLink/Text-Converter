@@ -269,6 +269,9 @@ function loadSettingsIntoModal() {
     document.getElementById('settingsSymbolFrequency').value = elements.symbolFrequencySlider.value;
     document.getElementById('settingsAllowRepeatSymbols').checked = elements.allowRepeatSymbols.checked;
     document.getElementById('settingsSymbolInput').value = elements.symbolInput.value;
+
+    // Sync symbol picker state from main page into settings modal
+    syncSymbolPickers('symbolPicker', 'settingsSymbolPicker');
 }
 
 /**
@@ -278,13 +281,37 @@ function loadSettingsIntoModal() {
 function updateSettingsSymbolControls(buttonId) {
     const settingsSymbolControls = document.getElementById('settingsSymbolControls');
     const settingsSymbolInput = document.getElementById('settingsSymbolInput');
+    const settingsPickerWrapper = document.getElementById('settingsSymbolPickerWrapper');
 
-    if (buttonId === 'settingsSymbolButton2' || buttonId === 'settingsSymbolButton3') {
+    const isPick = buttonId === 'settingsSymbolButton2';
+    const isCustom = buttonId === 'settingsSymbolButton3';
+
+    if (isPick || isCustom) {
         settingsSymbolControls.style.display = 'block';
-        settingsSymbolInput.style.display = buttonId === 'settingsSymbolButton3' ? 'block' : 'none';
+        settingsSymbolInput.style.display = isCustom ? 'block' : 'none';
+        if (settingsPickerWrapper) settingsPickerWrapper.style.display = isPick ? 'block' : 'none';
     } else {
         settingsSymbolControls.style.display = 'none';
     }
+}
+
+/**
+ * Copies the active/inactive state of each .symbol-picker-btn
+ * from one picker to another by position.
+ * @param {string} fromId - Source picker element ID
+ * @param {string} toId - Destination picker element ID
+ */
+function syncSymbolPickers(fromId, toId) {
+    const from = document.getElementById(fromId);
+    const to = document.getElementById(toId);
+    if (!from || !to) return;
+    const fromBtns = [...from.querySelectorAll('.symbol-picker-btn')];
+    const toBtns = [...to.querySelectorAll('.symbol-picker-btn')];
+    fromBtns.forEach((btn, i) => {
+        if (toBtns[i]) {
+            toBtns[i].classList.toggle('active', btn.classList.contains('active'));
+        }
+    });
 }
 
 /**
@@ -345,6 +372,9 @@ function applySettingsFromModal() {
     elements.symbolFrequencySlider.value = document.getElementById('settingsSymbolFrequency').value;
     elements.allowRepeatSymbols.checked = document.getElementById('settingsAllowRepeatSymbols').checked;
     elements.symbolInput.value = document.getElementById('settingsSymbolInput').value;
+
+    // Sync symbol picker state from settings modal back to main page
+    syncSymbolPickers('settingsSymbolPicker', 'symbolPicker');
 
     // Update the current settings in the active profile (if one is selected)
     const profileName = elements.profileSelect ? elements.profileSelect.value : '';
@@ -434,4 +464,7 @@ function initSettingsModal() {
             updateAlignmentPreview(parseInt(this.value));
         });
     }
+
+    // Initialise the settings modal symbol picker (no live update — applied on modal save)
+    initSymbolPicker('settingsSymbolPicker', null);
 }
