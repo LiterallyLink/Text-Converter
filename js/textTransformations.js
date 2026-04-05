@@ -238,6 +238,24 @@ function replaceSpaces(text, spaceStyle) {
 }
 
 /**
+ * Returns the subset of RANDOM_SYMBOLS that are currently enabled in the picker.
+ * Falls back to the full list if the picker element doesn't exist yet.
+ * @returns {string[]}
+ */
+function getEnabledSymbols() {
+    const picker = document.getElementById('symbolPicker');
+    if (!picker) return RANDOM_SYMBOLS;
+    const enabled = [];
+    picker.querySelectorAll('.symbol-picker-btn.active').forEach(btn => {
+        const index = parseInt(btn.dataset.index);
+        if (!isNaN(index) && RANDOM_SYMBOLS[index] !== undefined) {
+            enabled.push(RANDOM_SYMBOLS[index]);
+        }
+    });
+    return enabled;
+}
+
+/**
  * Adds symbols to text based on selected style and frequency
  * @param {string} text - Input text
  * @param {Object} elements - DOM elements object
@@ -250,24 +268,27 @@ function addSymbols(text, elements) {
     const frequency = elements.symbolFrequencySlider.value / 100;
     const spaceStyle = elements.spaceStyle.value;
     const spaceChar = SPACE_STYLES[spaceStyle] || ' ';
-    
+
     // Split text by spaces only (preserve newlines)
     const words = text.split(/ +/);
     const allowRepeats = elements.allowRepeatSymbols.checked;
-    
+
     if (activeButton.id === 'symbolButton2') {
-        // Random symbols
-        let availableSymbols = [...RANDOM_SYMBOLS];
+        // Pick mode — use only the symbols enabled in the picker
+        const enabledSymbols = getEnabledSymbols();
+        if (enabledSymbols.length === 0) return text;
+
+        let availableSymbols = [...enabledSymbols];
         let currentIndex = 0;
-        
+
         return words.map((word, index) => {
             if (Math.random() < frequency) {
                 let symbol;
                 if (allowRepeats) {
-                    symbol = RANDOM_SYMBOLS[Math.floor(Math.random() * RANDOM_SYMBOLS.length)];
+                    symbol = enabledSymbols[Math.floor(Math.random() * enabledSymbols.length)];
                 } else {
                     if (currentIndex >= availableSymbols.length) {
-                        availableSymbols = [...RANDOM_SYMBOLS];
+                        availableSymbols = [...enabledSymbols];
                         currentIndex = 0;
                     }
                     const randomIndex = Math.floor(Math.random() * availableSymbols.length);

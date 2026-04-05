@@ -33,13 +33,50 @@ function updateSymbolControls(buttonId, elements) {
     elements.symbolButtons.forEach(btn => btn.classList.remove('active'));
     const button = document.getElementById(buttonId);
     if (button) button.classList.add('active');
-    
-    if (buttonId === 'symbolButton2' || buttonId === 'symbolButton3') {
+
+    const isPick = buttonId === 'symbolButton2';
+    const isCustom = buttonId === 'symbolButton3';
+
+    if (isPick || isCustom) {
         elements.symbolControls.style.display = 'block';
-        elements.symbolInput.style.display = buttonId === 'symbolButton3' ? 'block' : 'none';
+        elements.symbolInput.style.display = isCustom ? 'block' : 'none';
+        const pickerWrapper = document.getElementById('symbolPickerWrapper');
+        if (pickerWrapper) pickerWrapper.style.display = isPick ? 'block' : 'none';
     } else {
         elements.symbolControls.style.display = 'none';
     }
+}
+
+/**
+ * Initialises toggle behaviour for a symbol picker grid.
+ * Each .symbol-picker-btn toggles its own active state.
+ * The All/None .symbol-picker-toggle buttons in the same wrapper
+ * bulk-enable or bulk-disable all buttons.
+ * @param {string} pickerId - ID of the .symbol-picker element
+ * @param {Function|null} onToggle - Called after any toggle, or null
+ */
+function initSymbolPicker(pickerId, onToggle) {
+    const picker = document.getElementById(pickerId);
+    if (!picker) return;
+
+    picker.querySelectorAll('.symbol-picker-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            btn.classList.toggle('active');
+            if (onToggle) onToggle();
+        });
+    });
+
+    const wrapper = picker.closest('.symbol-picker-wrapper');
+    if (!wrapper) return;
+    wrapper.querySelectorAll('.symbol-picker-toggle').forEach(ctrl => {
+        ctrl.addEventListener('click', () => {
+            const action = ctrl.dataset.action;
+            picker.querySelectorAll('.symbol-picker-btn').forEach(btn => {
+                btn.classList.toggle('active', action === 'all');
+            });
+            if (onToggle) onToggle();
+        });
+    });
 }
 
 /**
