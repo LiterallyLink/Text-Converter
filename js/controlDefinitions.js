@@ -35,6 +35,20 @@ const CONTROL_DEFINITIONS = [
         ]
     },
     {
+        id: 'numberStyle',
+        settingsId: 'settingsNumberStyle',
+        label: 'Number Style',
+        mainLabel: 'Select Number Style',
+        ariaLabel: 'Number formatting style',
+        options: [
+            { value: '', text: 'Select Number Style' },
+            { value: 'bold', text: 'Bold' },
+            { value: 'sans-bold', text: 'Sans-Serif Bold' },
+            { value: 'double-struck', text: 'Double-Struck' },
+            { value: 'monospace', text: 'Monospace' },
+        ]
+    },
+    {
         type: 'group',
         groupLabel: 'Punctuation Style',
         controls: [

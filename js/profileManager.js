@@ -82,6 +82,7 @@ function getCurrentSettings(elements) {
         quoteStyle: elements.quoteStyle.value,
         spaceStyle: elements.spaceStyle.value,
         uppercaseWordStyle: elements.uppercaseWordStyle.value,
+        numberStyle: elements.numberStyle.value,
         symbolMode: symbolMode,
         symbolFrequency: elements.symbolFrequencySlider.value,
         allowRepeatSymbols: elements.allowRepeatSymbols.checked,
@@ -112,6 +113,7 @@ function applySettings(settings, elements) {
     elements.quoteStyle.value = settings.quoteStyle || '';
     elements.spaceStyle.value = settings.spaceStyle || '';
     elements.uppercaseWordStyle.value = settings.uppercaseWordStyle || '';
+    elements.numberStyle.value = settings.numberStyle || '';
 
     // Apply symbol settings (default to None/symbolButton1)
     const symbolMode = settings.symbolMode || 'symbolButton1';
@@ -164,6 +166,7 @@ function resetToDefaults(elements) {
     elements.quoteStyle.value = '';
     elements.spaceStyle.value = '';
     elements.uppercaseWordStyle.value = '';
+    elements.numberStyle.value = '';
 
     // Reset symbol settings
     elements.symbolButtons.forEach(btn => btn.classList.remove('active'));
@@ -636,6 +639,7 @@ function resetToDefaultSettings(elements) {
     elements.quoteStyle.value = '';
     elements.spaceStyle.value = '';
     elements.uppercaseWordStyle.value = '';
+    elements.numberStyle.value = '';
 
     // Reset symbol settings
     elements.symbolButtons.forEach(btn => btn.classList.remove('active'));

@@ -251,6 +251,7 @@ function loadSettingsIntoModal() {
     document.getElementById('settingsQuoteStyle').value = elements.quoteStyle.value;
     document.getElementById('settingsSpaceStyle').value = elements.spaceStyle.value;
     document.getElementById('settingsUppercaseWordStyle').value = elements.uppercaseWordStyle.value;
+    document.getElementById('settingsNumberStyle').value = elements.numberStyle.value;
 
     // Load symbol settings
     const activeSymbolButton = Array.from(elements.symbolButtons).find(btn => btn.classList.contains('active'));
@@ -327,6 +328,7 @@ function applySettingsFromModal() {
     elements.quoteStyle.value = document.getElementById('settingsQuoteStyle').value;
     elements.spaceStyle.value = document.getElementById('settingsSpaceStyle').value;
     elements.uppercaseWordStyle.value = document.getElementById('settingsUppercaseWordStyle').value;
+    elements.numberStyle.value = document.getElementById('settingsNumberStyle').value;
 
     // Apply symbol settings
     const settingsActiveButton = Array.from(document.querySelectorAll('#settingsFormControls .symbol-button')).find(btn => btn.classList.contains('active'));
