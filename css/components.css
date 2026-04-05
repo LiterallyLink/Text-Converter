@@ -518,6 +518,25 @@ select {
     opacity: 0.8;
 }
 
+/* Experimental tag styles */
+.experimental-tag {
+    font-size: 0.7em;
+    background-color: var(--accent-color);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 8px;
+    font-weight: normal;
+    vertical-align: middle;
+    cursor: help;
+    opacity: 0.9;
+    transition: opacity 0.2s ease;
+}
+
+.experimental-tag:hover {
+    opacity: 1;
+}
+
 /* Symbol Picker */
 .symbol-picker-wrapper {
     margin-top: 12px;
