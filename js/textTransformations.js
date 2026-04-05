@@ -120,6 +120,19 @@ function replaceUppercaseWords(text, uppercaseStyle) {
 }
 
 /**
+ * Replaces digits with styled Unicode number equivalents
+ * @param {string} text - Input text
+ * @param {string} numberStyle - Selected number style
+ * @returns {string} Text with styled digits
+ */
+function boldNumbers(text, numberStyle) {
+    if (!numberStyle) return text;
+    const mapping = BOLD_NUMBER_FONTS[numberStyle];
+    if (!mapping) return text;
+    return text.replace(/[0-9]/g, digit => mapping[digit] || digit);
+}
+
+/**
  * Replaces commas with selected style
  * @param {string} text - Input text
  * @param {string} commaStyle - Selected comma style
@@ -279,6 +292,10 @@ function updateOutput(elements) {
         processedText = replaceUppercaseWords(
             processedText,
             elements.uppercaseWordStyle.value
+        );
+        processedText = boldNumbers(
+            processedText,
+            elements.numberStyle.value
         );
         processedText = replaceCommas(
             processedText,

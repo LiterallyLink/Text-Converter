@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
         spaceStyle: document.getElementById('spaceStyle'),
         symbolStyle: document.getElementById('symbolStyle'),
         uppercaseWordStyle: document.getElementById('uppercaseWordStyle'),
+        numberStyle: document.getElementById('numberStyle'),
         output: document.getElementById('output'),
         copyButton: document.getElementById('copyButton'),
         themeToggle: document.getElementById('checkbox'),
@@ -66,6 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.inputText.addEventListener('input', () => updateOutput(elements));
     elements.firstLetterFont.addEventListener('change', () => updateOutput(elements));
     elements.uppercaseWordStyle.addEventListener('change', () => updateOutput(elements));
+    elements.numberStyle.addEventListener('change', () => updateOutput(elements));
     elements.exclamationStyle.addEventListener('change', () => updateOutput(elements));
     elements.questionStyle.addEventListener('change', () => updateOutput(elements));
     elements.commaStyle.addEventListener('change', () => updateOutput(elements));
