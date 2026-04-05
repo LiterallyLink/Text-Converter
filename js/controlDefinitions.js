@@ -184,7 +184,10 @@ function renderControls(containerId, mode) {
     const pickerId = isSettings ? 'settingsSymbolPicker' : 'symbolPicker';
 
     html += `<div class="${sectionClass}">\n`;
-    html += `    <label class="symbol-label">Symbol Style</label>\n`;
+    html += `    <label class="symbol-label">\n`;
+    html += `        Symbol Style\n`;
+    html += `        <span class="experimental-tag" title="This feature is experimental and may be changed in the future.">Experimental</span>\n`;
+    html += `    </label>\n`;
     html += `    <div class="symbol-buttons">\n`;
     for (const btn of SYMBOL_BUTTONS) {
         const btnId = isSettings ? btn.settingsId : btn.id;
