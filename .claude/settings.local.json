@@ -15,7 +15,8 @@
       "mcp__Claude_Preview__preview_start",
       "Bash(where node:*)",
       "Bash(wc -l /c/Users/Zechariah/Desktop/Programming/GitHub/Text-Converter/js/*.js /c/Users/Zechariah/Desktop/Programming/GitHub/Text-Converter/css/*.css /c/Users/Zechariah/Desktop/Programming/GitHub/Text-Converter/index.html)",
-      "Bash(git -C /c/Users/Zechariah/Desktop/Programming/GitHub/Text-Converter log --oneline)"
+      "Bash(git -C /c/Users/Zechariah/Desktop/Programming/GitHub/Text-Converter log --oneline)",
+      "Bash(wc -l /c/Users/Zechariah/Desktop/Programming/GitHub/Text-Converter/tests/*.js)"
     ]
   }
 }

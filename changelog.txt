@@ -1,3 +1,11 @@
+Version 1.10.0 — April 5, 2026
+
+New:
+Live character count displayed below the output area — shows the number of characters in the transformed output, styled as unselectable dim text
+Undo, redo, and clear buttons below the input textarea — undo/redo track a custom history stack so clearing the input can be undone to restore text
+
+---
+
 Version 1.9.0 — April 5, 2026
 
 New:

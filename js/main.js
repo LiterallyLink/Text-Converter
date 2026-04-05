@@ -35,6 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
         outputSpacing: document.getElementById('outputSpacing'),
         textAlignment: document.getElementById('textAlignment'),
         alignmentWidth: document.getElementById('alignmentWidth'),
+        charCount: document.getElementById('charCount'),
+        undoButton: document.getElementById('undoButton'),
+        redoButton: document.getElementById('redoButton'),
+        clearButton: document.getElementById('clearButton'),
     };
 
     // Store elements globally for import/export access
@@ -79,6 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.symbolFrequencySlider.addEventListener('input', () => updateOutput(elements));
     elements.symbolInput.addEventListener('input', () => updateOutput(elements));
     elements.allowRepeatSymbols.addEventListener('change', () => updateOutput(elements));
+
+    // Undo / Redo / Clear Events
+    elements.undoButton.addEventListener('click', () => undoInput(elements));
+    elements.redoButton.addEventListener('click', () => redoInput(elements));
+    elements.clearButton.addEventListener('click', () => clearInput(elements));
 
     // Copy Button Event
     elements.copyButton.addEventListener('click', () => copyToClipboard(elements));
