@@ -4,6 +4,47 @@
  */
 
 /**
+ * Replaces backtick-quoted regions with unique placeholders so they are
+ * immune to every downstream transformation.
+ * Index is encoded as base-26 lowercase letters (no digits, no uppercase)
+ * so the placeholder itself cannot be touched by any transform.
+ * @param {string} text
+ * @returns {{ text: string, zones: string[] }}
+ */
+function extractNoFormatZones(text) {
+    const zones = [];
+    const result = text.replace(/`([^`]*)`/g, (match, content) => {
+        const index = zones.length;
+        zones.push(content);
+        let encoded = '';
+        let n = index;
+        do {
+            encoded = String.fromCharCode(97 + (n % 26)) + encoded;
+            n = Math.floor(n / 26);
+        } while (n > 0);
+        return '\x00' + encoded + '\x00';
+    });
+    return { text: result, zones };
+}
+
+/**
+ * Restores protected regions from their placeholders back to original content.
+ * @param {string} text
+ * @param {string[]} zones
+ * @returns {string}
+ */
+function restoreNoFormatZones(text, zones) {
+    if (zones.length === 0) return text;
+    return text.replace(/\x00([a-z]+)\x00/g, (match, encoded) => {
+        let index = 0;
+        for (const ch of encoded) {
+            index = index * 26 + (ch.charCodeAt(0) - 97);
+        }
+        return zones[index] !== undefined ? zones[index] : match;
+    });
+}
+
+/**
  * Applies bold/italic formatting (asterisk-based and single-underscore italic).
  * Called standalone for remaining text, and also for inner content of
  * underline/strikethrough wrappers before combining characters are applied.
@@ -284,6 +325,10 @@ function updateOutput(elements) {
     try {
         const originalText = processedText;
 
+        // Extract backtick-protected regions before any transformation runs
+        const { text: protectedText, zones } = extractNoFormatZones(processedText);
+        processedText = protectedText;
+
         // Apply text transformations in the correct order
         processedText = applyMarkdownStyles(
             processedText,
@@ -334,6 +379,9 @@ function updateOutput(elements) {
 
         // Apply spacing settings (newlines before and after)
         processedText = applySpacing(processedText, elements);
+
+        // Restore backtick-protected regions after all transforms are done
+        processedText = restoreNoFormatZones(processedText, zones);
 
         elements.output.innerHTML = processedText;
     } catch (error) {
