@@ -1,3 +1,13 @@
+Version 1.9.0 — April 5, 2026
+
+New:
+Bold number formatting: digits 0–9 can be styled independently with Bold, Sans-Serif Bold, Double-Struck, or Monospace Unicode number variants
+Backtick no-format zones: wrapping text in backticks (e.g. `raw text`) exempts it from all transformations — markdown, number styling, punctuation, spaces, symbols, everything
+Symbol picker: "Random" mode replaced with "Pick" mode — a scrollable grid showing all available symbols with per-symbol enable/disable toggles and bulk All/None buttons
+Symbol picker state persists in profiles and syncs with the settings modal
+
+---
+
 Version 1.8.0 — March 26, 2026
 
 New:
