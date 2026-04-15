@@ -2,7 +2,14 @@ Version 1.10.0 — April 5, 2026
 
 New:
 Live character count displayed below the output area — shows the number of characters in the transformed output, styled as unselectable dim text
-Undo, redo, and clear buttons below the input textarea — undo/redo track a custom history stack so clearing the input can be undone to restore text
+Undo, redo, and clear buttons below the input textarea — undo/redo track a custom history stack so clearing the input can be undone to restore text (currently hidden)
+Line padding: add wide whitespace (em-quad) to the start of every line, configurable from 0–3 in settings
+
+Fixes:
+Text alignment now runs before space replacement — wrapping calculates on normal spaces, then spaces are styled after
+visibleLength no longer miscounts combining characters (underline, strikethrough) as extra width
+Text alignment subtracts line padding from the target width so padded lines don't exceed the configured limit
+No-format zone placeholders now resolve to their original content length for accurate line wrapping
 
 ---
 

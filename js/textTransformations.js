@@ -430,16 +430,18 @@ function updateOutput(elements) {
             processedText,
             elements.quoteStyle.value
         );
-        // Add symbols before replacing spaces
+        // Add symbols before alignment
         processedText = addSymbols(processedText, elements);
-        // Replace spaces last to ensure consistent spacing
+
+        // Apply text alignment (word wrap) before space replacement
+        // so alignment works on normal ASCII spaces with predictable widths
+        processedText = applyTextAlignment(processedText, elements, zones);
+
+        // Replace spaces after alignment to ensure consistent styling
         processedText = replaceSpaces(
             processedText,
             elements.spaceStyle.value
         );
-
-        // Apply text alignment (word wrap) before spacing
-        processedText = applyTextAlignment(processedText, elements);
 
         // Apply first letter styling after alignment, paragraph starts only
         // Pass original text so the lookup uses ASCII letters even if they've been styled
@@ -452,12 +454,15 @@ function updateOutput(elements) {
         // Apply spacing settings (newlines before and after)
         processedText = applySpacing(processedText, elements);
 
+        // Apply line padding (wide whitespace at start of each line)
+        processedText = applyLinePadding(processedText, elements);
+
         // Restore backtick-protected regions after all transforms are done
         processedText = restoreNoFormatZones(processedText, zones);
 
         elements.output.innerHTML = processedText;
         if (elements.charCount) {
-            const len = [...elements.output.textContent].length;
+            const len = elements.output.textContent.length;
             elements.charCount.textContent = len + ' Character' + (len !== 1 ? 's' : '');
         }
     } catch (error) {
@@ -469,9 +474,33 @@ function updateOutput(elements) {
 
 /**
  * Returns the visible length of a word, excluding formatting markers (*** ** * __ ~~ _)
+ * and combining characters (underline U+0332, strikethrough U+0336, and other marks).
  */
 function visibleLength(word) {
-    return [...word.replace(/\*\*\*|\*\*|~~|__|[*_]/g, '')].length;
+    return [...word
+        .replace(/\*\*\*|\*\*|~~|__|[*_]/g, '')
+        .replace(/[\u0300-\u036F\u0332\u0336]/g, '')
+    ].length;
+}
+
+/**
+ * Returns the visible length of a word, resolving no-format zone placeholders
+ * to their original content length.
+ * @param {string} word - Word that may contain placeholders
+ * @param {string[]} zones - Original no-format zone contents
+ * @returns {number} Visible character count
+ */
+function visibleLengthWithZones(word, zones) {
+    if (!zones || zones.length === 0) return visibleLength(word);
+    // Replace each placeholder with its original content for length calculation
+    const resolved = word.replace(/\x00([a-z]+)\x00/g, (match, encoded) => {
+        let index = 0;
+        for (const ch of encoded) {
+            index = index * 26 + (ch.charCodeAt(0) - 97);
+        }
+        return zones[index] !== undefined ? zones[index] : match;
+    });
+    return visibleLength(resolved);
 }
 
 /**
@@ -479,13 +508,16 @@ function visibleLength(word) {
  * Splits on any Unicode whitespace to handle special space characters.
  * @param {string} text - Input text (may contain Unicode spaces and symbols)
  * @param {Object} elements - DOM elements object
+ * @param {string[]} [zones] - No-format zone contents for accurate width calculation
  * @returns {string} Text with line breaks inserted
  */
-function applyTextAlignment(text, elements) {
+function applyTextAlignment(text, elements, zones) {
     const enabled = elements.textAlignment ? elements.textAlignment.value === 'true' : false;
     if (!enabled) return text;
 
-    const maxWidth = elements.alignmentWidth ? parseInt(elements.alignmentWidth.value) || 35 : 35;
+    const baseWidth = elements.alignmentWidth ? parseInt(elements.alignmentWidth.value) || 35 : 35;
+    const padding = elements.linePadding ? parseInt(elements.linePadding.value) || 0 : 0;
+    const maxWidth = Math.max(baseWidth - padding, 10);
     // Match any Unicode whitespace character (but not newlines)
     const spacePattern = /[^\S\n]+/;
     const lines = text.split('\n');
@@ -504,7 +536,7 @@ function applyTextAlignment(text, elements) {
         const spaceMatch = line.match(/[^\S\n]/);
         const spaceChar = spaceMatch ? spaceMatch[0] : ' ';
 
-        const totalChars = words.reduce((sum, w) => sum + visibleLength(w), 0);
+        const totalChars = words.reduce((sum, w) => sum + visibleLengthWithZones(w, zones), 0);
         const totalWithSpaces = totalChars + (words.length - 1);
 
         if (totalWithSpaces <= maxWidth) {
@@ -518,7 +550,7 @@ function applyTextAlignment(text, elements) {
         function lineCost(i, j) {
             let width = -1;
             for (let k = i; k <= j; k++) {
-                width += visibleLength(words[k]) + 1;
+                width += visibleLengthWithZones(words[k], zones) + 1;
             }
             if (width > maxWidth) return Infinity;
             return Math.pow(maxWidth - width, 2);
@@ -582,4 +614,18 @@ function applySpacing(text, elements) {
     }
 
     return spacedText;
+}
+
+/**
+ * Adds wide whitespace padding (em-quad) to the start of every line.
+ * @param {string} text - Input text
+ * @param {Object} elements - DOM elements object
+ * @returns {string} Text with line padding applied
+ */
+function applyLinePadding(text, elements) {
+    const amount = elements.linePadding ? parseInt(elements.linePadding.value) || 0 : 0;
+    if (amount === 0) return text;
+
+    const pad = '\u2001'.repeat(amount);
+    return text.split('\n').map(line => pad + line).join('\n');
 }

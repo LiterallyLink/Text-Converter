@@ -70,6 +70,23 @@ function setSpacingPreference(spacing) {
 }
 
 /**
+ * Gets the line padding preference from localStorage
+ * @returns {number} The padding value (default 0)
+ */
+function getLinePaddingPreference() {
+    const val = localStorage.getItem('linePadding');
+    return val !== null ? parseInt(val) : 0;
+}
+
+/**
+ * Sets the line padding preference in localStorage
+ * @param {number} padding - The padding value
+ */
+function setLinePaddingPreference(padding) {
+    localStorage.setItem('linePadding', padding.toString());
+}
+
+/**
  * Updates the alignment preview with wrapped lorem ipsum text
  * @param {number} maxWidth - The max line width
  */
@@ -135,6 +152,18 @@ function applySpacingPreference() {
 
     if (hiddenInput) hiddenInput.value = spacing;
     if (settingsSelect) settingsSelect.value = spacing;
+}
+
+/**
+ * Applies the line padding preference from localStorage on page load
+ */
+function applyLinePaddingPreference() {
+    const padding = getLinePaddingPreference();
+    const hiddenInput = document.getElementById('linePadding');
+    const settingsSelect = document.getElementById('settingsLinePadding');
+
+    if (hiddenInput) hiddenInput.value = padding;
+    if (settingsSelect) settingsSelect.value = padding;
 }
 
 /**
@@ -221,6 +250,14 @@ function loadSettingsIntoModal() {
         document.getElementById('settingsOutputSpacing').value = currentSpacing;
     } else {
         document.getElementById('settingsOutputSpacing').value = '0';
+    }
+
+    // Load line padding
+    if (elements.linePadding) {
+        const currentPadding = elements.linePadding.value || '0';
+        document.getElementById('settingsLinePadding').value = currentPadding;
+    } else {
+        document.getElementById('settingsLinePadding').value = '0';
     }
 
     // Load text alignment setting
@@ -347,6 +384,13 @@ function applySettingsFromModal() {
         elements.outputSpacing.value = spacing;
     }
 
+    // Apply line padding
+    const padding = parseInt(document.getElementById('settingsLinePadding').value) || 0;
+    setLinePaddingPreference(padding);
+    if (elements.linePadding) {
+        elements.linePadding.value = padding;
+    }
+
     // Apply all transformation settings
     elements.firstLetterFont.value = document.getElementById('settingsFirstLetterFont').value;
     elements.exclamationStyle.value = document.getElementById('settingsExclamationStyle').value;
@@ -401,6 +445,7 @@ function initSettingsModal() {
     applyLayoutPreference();
     applyTextAlignmentPreference();
     applySpacingPreference();
+    applyLinePaddingPreference();
 
     // Settings profile selector change event
     const settingsProfileSelect = document.getElementById('settingsProfileSelect');

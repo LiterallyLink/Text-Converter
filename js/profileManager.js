@@ -73,6 +73,7 @@ function getCurrentSettings(elements) {
 
     // Get spacing settings (default to 0 if not set)
     const spacing = elements.outputSpacing ? parseInt(elements.outputSpacing.value) || 0 : 0;
+    const linePadding = elements.linePadding ? parseInt(elements.linePadding.value) || 0 : 0;
 
     return {
         firstLetterFont: elements.firstLetterFont.value,
@@ -93,6 +94,7 @@ function getCurrentSettings(elements) {
             return [...picker.querySelectorAll('.symbol-picker-btn')].map(btn => btn.classList.contains('active'));
         })(),
         spacing: spacing,
+        linePadding: linePadding,
         textAlignment: elements.textAlignment ? elements.textAlignment.value === 'true' : false,
         alignmentWidth: elements.alignmentWidth ? parseInt(elements.alignmentWidth.value) || 35 : 35
     };
@@ -151,6 +153,13 @@ function applySettings(settings, elements) {
         elements.outputSpacing.value = spacingVal;
     }
 
+    // Apply line padding (default to 0)
+    const paddingVal = settings.linePadding !== undefined ? settings.linePadding : 0;
+    setLinePaddingPreference(paddingVal);
+    if (elements.linePadding) {
+        elements.linePadding.value = paddingVal;
+    }
+
     // Apply text alignment setting
     if (elements.textAlignment) {
         const enabled = settings.textAlignment !== undefined ? settings.textAlignment : false;
@@ -205,6 +214,11 @@ function resetToDefaults(elements) {
     // Reset spacing
     if (elements.outputSpacing) {
         elements.outputSpacing.value = 0;
+    }
+
+    // Reset line padding
+    if (elements.linePadding) {
+        elements.linePadding.value = 0;
     }
 
     updateOutput(elements);
@@ -681,6 +695,11 @@ function resetToDefaultSettings(elements) {
     // Reset spacing to 0
     if (elements.outputSpacing) {
         elements.outputSpacing.value = 0;
+    }
+
+    // Reset line padding to 0
+    if (elements.linePadding) {
+        elements.linePadding.value = 0;
     }
 
     // Update output with default settings

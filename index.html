@@ -90,6 +90,8 @@
 
             <!-- Hidden input to store output spacing value -->
             <input type="hidden" id="outputSpacing" value="0">
+            <!-- Hidden input to store line padding value -->
+            <input type="hidden" id="linePadding" value="0">
             <!-- Hidden input to store text alignment preference -->
             <input type="hidden" id="textAlignment" value="false">
             <!-- Hidden input to store text alignment width -->
@@ -252,6 +254,18 @@
                                 <option value="3">3</option>
                                 <option value="4">4</option>
                                 <option value="5">5</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Line Padding</h3>
+                        <div class="spacing-controls">
+                            <select id="settingsLinePadding" aria-label="Line padding amount">
+                                <option value="0">None</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
                             </select>
                         </div>
                     </div>
