@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         saveProfileButton: document.getElementById('saveProfileButton'),
         deleteProfileButton: document.getElementById('deleteProfileButton'),
         outputSpacing: document.getElementById('outputSpacing'),
+        linePadding: document.getElementById('linePadding'),
         textAlignment: document.getElementById('textAlignment'),
         alignmentWidth: document.getElementById('alignmentWidth'),
         charCount: document.getElementById('charCount'),
